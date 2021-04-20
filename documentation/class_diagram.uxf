@@ -1,0 +1,13 @@
+<diagram program="umletino" version="14.4.0-SNAPSHOT"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>480</x><y>290</y><w>290</w><h>170</h></coordinates><panel_attributes>RadarScanProcessor
+--
+- Calibrations
+--
+/Operations/
+- Initialize()
+- ProcessScan()
+--
+Responsibilities
+-- Process single radar scan: dealias detections,
+   classify detections, group detections into objects
+   
+</panel_attributes><additional_attributes></additional_attributes></element></diagram>
