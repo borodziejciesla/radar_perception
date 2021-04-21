@@ -12,7 +12,7 @@ jobs:
     # well on Windows or Mac.  You can convert this to a matrix build if you need
     # cross-platform coverage.
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v2
@@ -20,10 +20,18 @@ jobs:
     - name: Install gtest
       run: |
         sudo apt-get install libgtest-dev
-        cd /usr/src/gtest
-        sudo cmake CMakeLists.txt
+        cd /usr/src/googletest/googletest
+        sudo mkdir build
+        cd build
+        sudo cmake ..
         sudo make
-        sudo cp *.a /usr/lib
+        sudo cp libgtest* /usr/lib/
+        cd ..
+        sudo rm -rf build
+
+        sudo mkdir /usr/local/lib/googletest
+        sudo ln -s /usr/lib/libgtest.a /usr/local/lib/googletest/libgtest.a
+        sudo ln -s /usr/lib/libgtest_main.a /usr/local/lib/googletest/libgtest_main.a
 
     - name: Create Build Environment
       # Some projects don't allow in-source building, so create a separate build directory
