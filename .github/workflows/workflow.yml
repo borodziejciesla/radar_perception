@@ -2,10 +2,8 @@ name: C/C++
 
 on:
   push:
-    # Publish `master` as Docker `latest` image.
+    # run on every branches
     branches:
-      - master
-      - develop
 
     # Publish `v1.2.3` tags as releases.
     tags:
@@ -41,7 +39,7 @@ jobs:
     # Ensure test job passes before pushing image.
     needs: test
 
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     if: github.event_name == 'push'
 
     steps:
