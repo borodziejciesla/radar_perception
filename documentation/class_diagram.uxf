@@ -1,13 +1,68 @@
-<diagram program="umletino" version="14.4.0-SNAPSHOT"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>480</x><y>290</y><w>290</w><h>170</h></coordinates><panel_attributes>RadarScanProcessor
+<diagram program="umletino" version="14.4.0-SNAPSHOT"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>990</x><y>180</y><w>310</w><h>260</h></coordinates><panel_attributes>RadarScanProcessor
 --
+
 - Calibrations
+
 --
-/Operations/
-- Initialize()
-- ProcessScan()
+
+/Public Operations/
+- Initialize(const Calibrations &amp;)
+- ProcessScan(const RadarScan &amp;) : ProcessingOutput
+
+/Private Operations/
+
 --
+
 Responsibilities
 -- Process single radar scan: dealias detections,
    classify detections, group detections into objects
    
-</panel_attributes><additional_attributes></additional_attributes></element></diagram>
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>420</x><y>220</y><w>320</w><h>170</h></coordinates><panel_attributes>ProcessingOutput
+--
+
+- std::vector&lt;ProcessedDetection&gt; processed_detections
+- std::vector&lt;RadarObjects&gt; radar_objects
+- SensorVelocity sensor_scs_velocity
+
+--
+
+Responsibilities
+-- Class is storage for output of radar scan processing</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>730</x><y>300</y><w>280</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>260;10;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>200</x><y>480</y><w>210</w><h>220</h></coordinates><panel_attributes>ProcessedDetection
+--
+
+- float range
+- float azimuth
+- float elevation
+- float range_rate_compensated
+
+- float range_std
+- float azimuth_std
+- float elevation_std
+- float range_rate_compensated_std
+
+- MovingStatus moving_status</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>290</x><y>380</y><w>180</w><h>120</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>160;10;160;50;10;50;10;100</additional_attributes></element><element><id>UMLClass</id><coordinates><x>490</x><y>480</y><w>170</w><h>270</h></coordinates><panel_attributes>RadarObject
+--
+
+- float x
+- float y
+- float[4] position_covariance
+
+- float orientation
+- float orientation_std
+
+- float length
+- float width
+- float length_std
+- float width_std
+
+- float vx
+- float vy
+- float[4] velocity_covariance
+
+- float yaw_rate
+- float yaw_rate_std</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>560</x><y>380</y><w>30</w><h>120</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;100</additional_attributes></element><element><id>UMLClass</id><coordinates><x>740</x><y>480</y><w>170</w><h>100</h></coordinates><panel_attributes>SensorVelocity
+--
+
+- float vx
+- float vy
+- float[4] velocity_covariance</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>700</x><y>380</y><w>150</w><h>120</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;50;130;50;130;100</additional_attributes></element></diagram>
