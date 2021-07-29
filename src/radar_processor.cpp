@@ -1,9 +1,11 @@
-#include "radar_processor.h"
+#include "radar_processor.hpp"
 
 namespace measurements::radar
 {
     RadarProcessor::RadarProcessor(void)
-    {}
+    {
+        int l;
+    }
 
     RadarProcessor::~RadarProcessor(void)
     {}

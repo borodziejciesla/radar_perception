@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "radar_processor.h"
+#include "radar_processor.hpp"
 
 class RadarProcessorTests : public ::testing::Test
 {

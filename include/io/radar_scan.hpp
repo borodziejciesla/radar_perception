@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include "radar_detection.h"
-#include "sensor_origin.h"
+#include "radar_detection.hpp"
+#include "sensor_origin.hpp"
 
 namespace measurements::radar
 {
