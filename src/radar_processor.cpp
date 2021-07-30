@@ -9,14 +9,26 @@
 
 #include "radar_processor.hpp"
 
+#include "dealiaser.hpp"
+#include "detection_classifier.hpp"
+#include "velocity_estimator.hpp"
+
 namespace measurements::radar {
-    RadarProcessor::RadarProcessor(void) {
-        int l;
+    RadarProcessor::RadarProcessor(void)
+        : dealiaser_{std::make_unique<Dealiaser>()}
+        , detection_classifier_{std::make_unique<DetectionClassifier>()}
+        , velocity_estimator_{std::make_unique<VelocityEstimator>()} {
     }
 
     RadarProcessor::~RadarProcessor(void) {}
 
     void RadarProcessor::Initialize(const ProcessorCalibration & calibration) {
         calibration_ = calibration;
+    }
+
+    void RadarProcessor::ProcessScan(RadarScan & radar_scan) {
+        dealiaser_->Run();
+        detection_classifier_->Run();
+        velocity_estimator_->Run();
     }
 }   // namespace measurements::radar

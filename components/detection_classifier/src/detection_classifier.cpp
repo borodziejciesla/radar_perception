@@ -7,4 +7,7 @@ namespace measurements::radar
 
     DetectionClassifier::~DetectionClassifier(void)
     {}
-}
+
+    void DetectionClassifier::Run(void)
+    {}
+}   // namespace measurements::radar

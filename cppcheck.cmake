@@ -35,6 +35,6 @@ add_custom_target(
     --verbose
     --inline-suppr
     --force
-    --output-file=${CMAKE_SOURCE_DIR}/suppressions.txt
+    --output-file=${CMAKE_SOURCE_DIR}/cppcheck_output.txt
     ${ALL_SOURCE_FILES}
 )

@@ -41,3 +41,6 @@ log/
 # Other folders
 .cccc/
 
+# Other files
+cppcheck_output.txt
+

@@ -7,4 +7,7 @@ namespace measurements::radar
 
     VelocityEstimator::~VelocityEstimator(void)
     {}
-}
+
+    void VelocityEstimator::Run(void)
+    {}
+}   // namespace measurements::radar

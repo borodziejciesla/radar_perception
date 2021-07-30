@@ -7,4 +7,7 @@ namespace measurements::radar
 
     Dealiaser::~Dealiaser(void)
     {}
-}
+
+    void Dealiaser::Run(void)
+    {}
+}   // namespace measurements::radar
