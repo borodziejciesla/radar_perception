@@ -38,3 +38,6 @@ build/
 .vscode/
 log/
 
+# Other folders
+.cccc/
+
