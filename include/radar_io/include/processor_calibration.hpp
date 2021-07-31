@@ -1,5 +1,5 @@
-#ifndef RADAR_PERCEPTION_INCLUDE_INTERFACE_CALIBRATION_H_
-#define RADAR_PERCEPTION_INCLUDE_INTERFACE_CALIBRATION_H_
+#ifndef INCLUDE_RADAR_IO_INCLUDE_PROCESSOR_CALIBRATION_HPP_
+#define INCLUDE_RADAR_IO_INCLUDE_PROCESSOR_CALIBRATION_HPP_
 
 namespace measurements::radar
 {
@@ -7,6 +7,6 @@ namespace measurements::radar
     {
         int mockup;
     };
-}
+}   // namespace measurements::radar
 
-#endif //RADAR_PERCEPTION_INCLUDE_INTERFACE_CALIBRATION_H_
+#endif // INCLUDE_RADAR_IO_INCLUDE_PROCESSOR_CALIBRATION_HPP_

@@ -1,4 +1,4 @@
-# Additional target to perform cppcheck run, requires cppcheck
+# Additional target to perform cpplint run, requires cppcheck
 
 # Get all project files
 file(GLOB_RECURSE ALL_SOURCE_FILES *.cpp *.hpp)
@@ -21,21 +21,23 @@ foreach (SOURCE_FILE ${ALL_SOURCE_FILES})
 endforeach ()
 
 
-# Run CppCheck
-find_program(CMAKE_CXX_CPPCHECK NAMES cppcheck)
+# Run cpplint
+find_package(PythonInterp)
+if(NOT PYTHONINTERP_FOUND)
+    message(WARNING "No python interpreter - cpplint failed")
+    return()
+endif()
 
-if(CMAKE_CXX_CPPCHECK)
-    add_custom_target(cppcheck
-        COMMAND ${CMAKE_CXX_CPPCHECK}
-            --enable=all#warning,performance,portability,information,missingInclude
-            --std=c++20
-            --inconclusive
-            --library=qt.cfg
-            --template="[{severity}][{id}] {message} {callstack} \(On {file}:{line}\)"
-            --verbose
-            --inline-suppr
-            --force
-            --output-file=${CMAKE_SOURCE_DIR}/cppcheck_output.txt
+find_program(CMAKE_CXX_CPPCLINT NAMES cpplint)
+
+if(CMAKE_CXX_CPPCLINT)
+    add_custom_target(cpplint
+        COMMAND ${CMAKE_CXX_CPPCLINT}
+            --verbose=5
+            --output=emacs
             ${ALL_SOURCE_FILES}
+        DEPENDS ${ALL_SOURCE_FILES}
+        COMMENT "Linting cpplint"
+        VERBATIM
     )
 endif()

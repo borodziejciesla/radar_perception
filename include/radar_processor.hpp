@@ -7,8 +7,8 @@
  * this file. If not, please write to: , or visit :
  */
 
-#ifndef RADAR_PERCEPTION_INCLUDE_INTERFACE_RADAR_PROCESSOR_H_
-#define RADAR_PERCEPTION_INCLUDE_INTERFACE_RADAR_PROCESSOR_H_
+#ifndef INCLUDE_RADAR_PROCESSOR_HPP_
+#define INCLUDE_RADAR_PROCESSOR_HPP_
 
 #include <memory>
 
@@ -36,6 +36,6 @@ namespace measurements::radar
             std::unique_ptr<DetectionClassifier> detection_classifier_;
             std::unique_ptr<VelocityEstimator> velocity_estimator_;
     };
-}
+}   // namespace measurements::radar
 
-#endif //RADAR_PERCEPTION_INCLUDE_INTERFACE_RADAR_PROCESSOR_H_
+#endif  //  INCLUDE_RADAR_PROCESSOR_HPP_

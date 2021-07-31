@@ -1,5 +1,5 @@
-#ifndef RADAR_PERCEPTION_INCLUDE_INTERFACE_RADAR_DETECTION_H_
-#define RADAR_PERCEPTION_INCLUDE_INTERFACE_RADAR_DETECTION_H_
+#ifndef INCLUDE_RADAR_IO_INCLUDE_RADAR_DETECTION_HPP_
+#define INCLUDE_RADAR_IO_INCLUDE_RADAR_DETECTION_HPP_
 
 namespace measurements::radar
 {
@@ -15,6 +15,6 @@ namespace measurements::radar
         float elevaion_std = 0.0f;
         float range_rate_std = 0.0f;
     };
-}
+}   // namespace measurements::radar
 
-#endif //RADAR_PERCEPTION_INCLUDE_INTERFACE_RADAR_DETECTION_H_
+#endif // INCLUDE_RADAR_IO_INCLUDE_RADAR_DETECTION_HPP_

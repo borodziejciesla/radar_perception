@@ -40,6 +40,7 @@ add_subdirectory(components)
 
 ############### Static Analysis ###############
 include(cppcheck.cmake)
+include(cpplint.cmake)
 
 ################ Unit Tests ###################
 if(UNIX)
@@ -48,7 +49,5 @@ if(UNIX)
     find_package(GTest REQUIRED)
     include_directories(${GTEST_INCLUDE_DIR})
     
-    # target_link_libraries(${PROJECT_NAME} GTest::GTest GTest::Main)
-
     add_subdirectory(tests)
 endif()

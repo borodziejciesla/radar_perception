@@ -1,5 +1,5 @@
-#ifndef RADAR_PERCEPTION_INCLUDE_INTERFACE_SENSOR_ORIGIN_H_
-#define RADAR_PERCEPTION_INCLUDE_INTERFACE_SENSOR_ORIGIN_H_
+#ifndef INCLUDE_RADAR_IO_INCLUDE_SENSOR_ORIGIN_HPP_
+#define INCLUDE_RADAR_IO_INCLUDE_SENSOR_ORIGIN_HPP_
 
 namespace measurements::radar
 {
@@ -13,6 +13,6 @@ namespace measurements::radar
         float pitch = 0.0f;
         float roll = 0.0f;
     };
-}
+}   // namespace measurements::radar
 
-#endif //RADAR_PERCEPTION_INCLUDE_INTERFACE_SENSOR_ORIGIN_H_
+#endif // INCLUDE_RADAR_IO_INCLUDE_SENSOR_ORIGIN_HPP_

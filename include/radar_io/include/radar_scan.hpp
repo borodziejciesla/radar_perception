@@ -1,5 +1,5 @@
-#ifndef RADAR_PERCEPTION_INCLUDE_INTERFACE_RADAR_SCAN_H_
-#define RADAR_PERCEPTION_INCLUDE_INTERFACE_RADAR_SCAN_H_
+#ifndef INCLUDE_RADAR_IO_INCLUDE_RADAR_SCAN_HPP_
+#define INCLUDE_RADAR_IO_INCLUDE_RADAR_SCAN_HPP_
 
 #include <vector>
 
@@ -11,8 +11,10 @@ namespace measurements::radar
     struct RadarScan
     {
         SensorOrigin sensor_origin;
+        float aliasing_period = 0.0f;
+
         std::vector<RadarDetection> detections;
     };
-}
+}   // namespace measurements::radar
 
-#endif //RADAR_PERCEPTION_INCLUDE_INTERFACE_RADAR_SCAN_H_
+#endif // INCLUDE_RADAR_IO_INCLUDE_RADAR_SCAN_HPP_

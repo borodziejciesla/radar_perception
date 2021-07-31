@@ -1,7 +1,9 @@
-#ifndef RADAR_PERCEPTION_COMPONENTS_DEALIASER_INCLUDE_DEALIASER_H_
-#define RADAR_PERCEPTION_COMPONENTS_DEALIASER_INCLUDE_DEALIASER_H_
+#ifndef COMPONENTS_DEALIASER_INCLUDE_DEALIASER_HPP_
+#define COMPONENTS_DEALIASER_INCLUDE_DEALIASER_HPP_
 
 #include "radar_scan.hpp"
+
+#include <vector>
 
 namespace measurements::radar
 {
@@ -17,4 +19,4 @@ namespace measurements::radar
     };
 }   // namespace measurements::radar
 
-#endif // RADAR_PERCEPTION_COMPONENTS_DEALIASER_INCLUDE_DEALIASER_H_
+#endif // COMPONENTS_DEALIASER_INCLUDE_DEALIASER_HPP_
