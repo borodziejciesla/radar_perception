@@ -6,7 +6,7 @@ project(${PROJECT_NAME})
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(BUILD_TESTS ON)
+set(DEFAULT_BUILD_TYPE "Debug")
 
 ########### Add sources and includes ###########
 include(GNUInstallDirs)
@@ -19,20 +19,21 @@ add_library(${PROJECT_NAME}
     $<TARGET_OBJECTS:velocity_estimator>
 )
 
-add_subdirectory(include/io)
+add_subdirectory(include/radar_io include)
+add_library(radar_io::radar_io ALIAS radar_io)
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
-    $<BUILD_INTERFACE:radar_io, INTERFACE_INCLUDE_DIRECTORIES>
+        radar_io
 )
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC
         include/
-        include/io/include
+        $<INSTALL_INTERFACE:radar_io,include>
     PRIVATE
-        ${CMAKE_SOURCE_DIR}/components/dealiaser/include
-        ${CMAKE_SOURCE_DIR}/components/detection_classifier/include
-        ${CMAKE_SOURCE_DIR}/components/velocity_estimator/include
+        $<TARGET_PROPERTY:dealiaser,INTERFACE_INCLUDE_DIRECTORIES>
+        $<TARGET_PROPERTY:detection_classifier,INTERFACE_INCLUDE_DIRECTORIES>
+        $<TARGET_PROPERTY:velocity_estimator,INTERFACE_INCLUDE_DIRECTORIES>
 )
 
 add_subdirectory(components)
@@ -41,15 +42,13 @@ add_subdirectory(components)
 include(cppcheck.cmake)
 
 ################ Unit Tests ###################
-if (BUILD_TESTS)
-    if(UNIX)
-        # Testing
-        enable_testing()
-        find_package(GTest REQUIRED)
-        include_directories(${GTEST_INCLUDE_DIR})
-        
-        target_link_libraries(${PROJECT_NAME} GTest::GTest GTest::Main)
+if(UNIX)
+    # Testing
+    enable_testing()
+    find_package(GTest REQUIRED)
+    include_directories(${GTEST_INCLUDE_DIR})
+    
+    # target_link_libraries(${PROJECT_NAME} GTest::GTest GTest::Main)
 
-        add_subdirectory(tests)
-    endif()
+    add_subdirectory(tests)
 endif()
