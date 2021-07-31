@@ -1,6 +1,8 @@
 #ifndef RADAR_PERCEPTION_COMPONENTS_DEALIASER_INCLUDE_DEALIASER_H_
 #define RADAR_PERCEPTION_COMPONENTS_DEALIASER_INCLUDE_DEALIASER_H_
 
+#include "radar_scan.hpp"
+
 namespace measurements::radar
 {
     class Dealiaser
@@ -9,7 +11,7 @@ namespace measurements::radar
             Dealiaser(void);
             ~Dealiaser(void);
 
-            void Run(void);
+            void Run(RadarScan & radar_scan);
 
         private:
     };

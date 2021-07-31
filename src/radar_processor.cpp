@@ -27,7 +27,7 @@ namespace measurements::radar {
     }
 
     void RadarProcessor::ProcessScan(RadarScan & radar_scan) {
-        dealiaser_->Run();
+        dealiaser_->Run(radar_scan);
         detection_classifier_->Run();
         velocity_estimator_->Run();
     }

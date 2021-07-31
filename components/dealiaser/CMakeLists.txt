@@ -7,4 +7,5 @@ add_library(dealiaser
 target_include_directories(dealiaser
     PUBLIC
         include
+        ${CMAKE_SOURCE_DIR}/include/io/include
 )
