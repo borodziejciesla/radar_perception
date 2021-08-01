@@ -7,16 +7,16 @@
  * this file. If not, please write to: , or visit :
  */
 
-#include "detection_classifier.hpp"
+#ifndef COMPONENTS_COMMON_INCLUDE_VELOCITY_PROFILE_HPP_
+#define COMPONENTS_COMMON_INCLUDE_VELOCITY_PROFILE_HPP_
 
 namespace measurements::radar
 {
-    DetectionClassifier::DetectionClassifier(void)
-    {}
+    struct VelocityProfile
+    {
+        float vx = 0.0f;
+        float vy = 0.0f;
+    };
+}   // measurements::radar
 
-    DetectionClassifier::~DetectionClassifier(void)
-    {}
-
-    void DetectionClassifier::Run(void)
-    {}
-}   // namespace measurements::radar
+#endif  //  COMPONENTS_COMMON_INCLUDE_VELOCITY_PROFILE_HPP_

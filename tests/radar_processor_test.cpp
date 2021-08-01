@@ -1,5 +1,7 @@
 #include "gtest/gtest.h"
 
+#include <memory>
+
 #include "radar_processor.hpp"
 
 class RadarProcessorTests : public ::testing::Test
@@ -11,8 +13,8 @@ class RadarProcessorTests : public ::testing::Test
 
 TEST_F(RadarProcessorTests, ConstructorTest)
 {
-    measurements::radar::RadarProcessor rp;
-    EXPECT_TRUE(true);
+    std::unique_ptr<measurements::radar::RadarProcessor> rp;
+    EXPECT_NO_THROW(rp = std::make_unique<measurements::radar::RadarProcessor>());
 }
 
 TEST_F(RadarProcessorTests, RunTest)

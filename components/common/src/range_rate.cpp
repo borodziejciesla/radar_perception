@@ -7,16 +7,15 @@
  * this file. If not, please write to: , or visit :
  */
 
-#include "detection_classifier.hpp"
+#include "range_rate.hpp"
 
 namespace measurements::radar
 {
-    DetectionClassifier::DetectionClassifier(void)
-    {}
+    float RangeRate2D(const float azimuth, const VelocityProfile & velocity_prifle) {
+        return 0.0f;
+    }
 
-    DetectionClassifier::~DetectionClassifier(void)
-    {}
-
-    void DetectionClassifier::Run(void)
-    {}
-}   // namespace measurements::radar
+    float RangeRate3D(const float azimuth, const float elevation, const VelocityProfile & velocity_prifle) {
+        return 0.0f;
+    }
+}   //  namespace measurements::radar
