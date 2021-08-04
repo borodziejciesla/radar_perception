@@ -11,10 +11,14 @@
 
 #include <ranges>
 #include <algorithm>
+#include <cmath>
+
+#include "range_rate.hpp"
 
 namespace measurements::radar
 {
-    Dealiaser::Dealiaser(void)
+    Dealiaser::Dealiaser(const DealiaserCalibration & dealiaser_calibrations)
+        : calibrations_{dealiaser_calibrations}
     {}
 
     Dealiaser::~Dealiaser(void)
@@ -22,8 +26,27 @@ namespace measurements::radar
 
     void Dealiaser::Run(RadarScan & radar_scan)
     {
-        auto dealias = [](RadarDetection & detection) {
-            detection.range_rate = 0.0;
+        auto dealias = [=](RadarDetection & detection) {
+            auto rr_model = RangeRate2D(detection.azimuth, velocity_profile_);
+            
+            if (std::abs(rr_model - detection.range_rate) < calibrations_.dealiaser_threshold)
+            {
+                detection.dealiasing_status = DealiasingStatus::STATIC_VELOCITY_PROFILE_DEALIASING;
+            }
+            else if (std::abs(rr_model - (detection.range_rate + radar_scan.aliasing_period)) < calibrations_.dealiaser_threshold)
+            {
+                detection.range_rate += radar_scan.aliasing_period;
+                detection.dealiasing_status = DealiasingStatus::STATIC_VELOCITY_PROFILE_DEALIASING;
+            }
+            else if (std::abs(rr_model - (detection.range_rate - radar_scan.aliasing_period)) < calibrations_.dealiaser_threshold)
+            {
+                detection.range_rate -= radar_scan.aliasing_period;
+                detection.dealiasing_status = DealiasingStatus::STATIC_VELOCITY_PROFILE_DEALIASING;
+            }
+            else
+            {
+                // Do nothing - still non-dealiased
+            }
         };
 
         std::for_each(radar_scan.detections.begin(), radar_scan.detections.end(), dealias);

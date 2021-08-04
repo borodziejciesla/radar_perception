@@ -10,6 +10,9 @@
 #ifndef INCLUDE_RADAR_IO_INCLUDE_RADAR_DETECTION_HPP_
 #define INCLUDE_RADAR_IO_INCLUDE_RADAR_DETECTION_HPP_
 
+#include "dealiasing_status.hpp"
+#include "moving_status.hpp"
+
 namespace measurements::radar
 {
     struct RadarDetection
@@ -23,6 +26,9 @@ namespace measurements::radar
         float azimuth_std = 0.0f;
         float elevaion_std = 0.0f;
         float range_rate_std = 0.0f;
+
+        DealiasingStatus dealiasing_status = DealiasingStatus::NON_DEALIASED;
+        MovingStatus moving_status = MovingStatus::AMBIGUOUS;
     };
 }   // namespace measurements::radar
 

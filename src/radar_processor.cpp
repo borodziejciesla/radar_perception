@@ -14,21 +14,18 @@
 #include "velocity_estimator.hpp"
 
 namespace measurements::radar {
-    RadarProcessor::RadarProcessor(void)
-        : dealiaser_{std::make_unique<Dealiaser>()}
+    RadarProcessor::RadarProcessor(const ProcessorCalibration & calibration)
+        : calibration_{calibration}
+        , dealiaser_{std::make_unique<Dealiaser>(calibration_.dealiaser_calibration)}
         , detection_classifier_{std::make_unique<DetectionClassifier>()}
         , velocity_estimator_{std::make_unique<VelocityEstimator>()} {
     }
 
     RadarProcessor::~RadarProcessor(void) {}
 
-    void RadarProcessor::Initialize(const ProcessorCalibration & calibration) {
-        calibration_ = calibration;
-    }
-
     void RadarProcessor::ProcessScan(RadarScan & radar_scan) {
         dealiaser_->Run(radar_scan);
         detection_classifier_->Run();
-        velocity_estimator_->Run();
+        velocity_estimator_->Run(radar_scan);
     }
 }   // namespace measurements::radar

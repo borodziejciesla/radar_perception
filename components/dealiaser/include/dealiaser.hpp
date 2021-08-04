@@ -14,18 +14,20 @@
 
 #include "radar_scan.hpp"
 #include "velocity_profile.hpp"
+#include "dealiaser_calibrations.hpp"
 
 namespace measurements::radar
 {
     class Dealiaser
     {
         public:
-            Dealiaser(void);
+            explicit Dealiaser(const DealiaserCalibration & dealiaser_calibrations);
             ~Dealiaser(void);
 
             void Run(RadarScan & radar_scan);
 
         private:
+            const DealiaserCalibration calibrations_;
             VelocityProfile velocity_profile_;
     };
 }   // namespace measurements::radar

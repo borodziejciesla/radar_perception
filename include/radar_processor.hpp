@@ -24,10 +24,9 @@ namespace measurements::radar
     class RadarProcessor
     {
         public:
-            RadarProcessor(void);
+            explicit RadarProcessor(const ProcessorCalibration & calibration);
             ~RadarProcessor(void);
 
-            void Initialize(const ProcessorCalibration & calibration);
             void ProcessScan(RadarScan & radar_scan);
 
         private:

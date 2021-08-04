@@ -9,10 +9,12 @@
 
 #include "range_rate.hpp"
 
+#include <cmath>
+
 namespace measurements::radar
 {
     float RangeRate2D(const float azimuth, const VelocityProfile & velocity_prifle) {
-        return 0.0f;
+        return (std::cos(azimuth) * velocity_prifle.vx) + (std::sin(azimuth) * velocity_prifle.vy);
     }
 
     float RangeRate3D(const float azimuth, const float elevation, const VelocityProfile & velocity_prifle) {

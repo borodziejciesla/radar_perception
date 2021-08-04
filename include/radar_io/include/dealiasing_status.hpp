@@ -7,17 +7,17 @@
  * this file. If not, please write to: , or visit :
  */
 
-#ifndef INCLUDE_RADAR_IO_INCLUDE_PROCESSOR_CALIBRATION_HPP_
-#define INCLUDE_RADAR_IO_INCLUDE_PROCESSOR_CALIBRATION_HPP_
-
-#include "dealiaser_calibrations.hpp"
+#ifndef INCLUDE_RADAR_IO_INCLUDE_DEALIASING_STATUS_HPP_
+#define INCLUDE_RADAR_IO_INCLUDE_DEALIASING_STATUS_HPP_
 
 namespace measurements::radar
 {
-    struct ProcessorCalibration
+    enum class DealiasingStatus
     {
-        DealiaserCalibration dealiaser_calibration;
+        STATIC_VELOCITY_PROFILE_DEALIASING = 0u,
+        MOVING_OBJECT_DEALIASING = 1u,
+        NON_DEALIASED = 2u
     };
 }   // namespace measurements::radar
 
-#endif // INCLUDE_RADAR_IO_INCLUDE_PROCESSOR_CALIBRATION_HPP_
+#endif // INCLUDE_RADAR_IO_INCLUDE_DEALIASING_STATUS_HPP_

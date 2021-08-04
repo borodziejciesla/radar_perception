@@ -7,17 +7,15 @@
  * this file. If not, please write to: , or visit :
  */
 
-#ifndef INCLUDE_RADAR_IO_INCLUDE_PROCESSOR_CALIBRATION_HPP_
-#define INCLUDE_RADAR_IO_INCLUDE_PROCESSOR_CALIBRATION_HPP_
-
-#include "dealiaser_calibrations.hpp"
+#ifndef INCLUDE_RADAR_IO_INCLUDE_DEALIASER_CALIBRATIONS_HPP_
+#define INCLUDE_RADAR_IO_INCLUDE_DEALIASER_CALIBRATIONS_HPP_
 
 namespace measurements::radar
 {
-    struct ProcessorCalibration
+    struct DealiaserCalibration
     {
-        DealiaserCalibration dealiaser_calibration;
+        float dealiaser_threshold = 0.0f;
     };
 }   // namespace measurements::radar
 
-#endif // INCLUDE_RADAR_IO_INCLUDE_PROCESSOR_CALIBRATION_HPP_
+#endif // INCLUDE_RADAR_IO_INCLUDE_DEALIASER_CALIBRATIONS_HPP_
