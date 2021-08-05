@@ -11,12 +11,14 @@
 #define INCLUDE_RADAR_IO_INCLUDE_PROCESSOR_CALIBRATION_HPP_
 
 #include "dealiaser_calibrations.hpp"
+#include "velocity_estimator_calibrations.hpp"
 
 namespace measurements::radar
 {
     struct ProcessorCalibration
     {
         DealiaserCalibration dealiaser_calibration;
+        VelocityEstimatorCalibration velocity_estimator_calibration;
     };
 }   // namespace measurements::radar
 

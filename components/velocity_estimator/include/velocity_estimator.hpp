@@ -16,6 +16,8 @@
 #include <limits>
 #include <vector>
 
+#include "velocity_estimator_calibrations.hpp"
+
 #include "velocity_profile.hpp"
 
 namespace measurements::radar
@@ -23,16 +25,17 @@ namespace measurements::radar
     class VelocityEstimator
     {
         public:
-            VelocityEstimator(void);
+            explicit VelocityEstimator(const VelocityEstimatorCalibration & calibration);
             ~VelocityEstimator(void);
 
             const VelocityProfile & Run(const RadarScan & radar_scan);
 
         private:
             std::tuple<uint, uint> GetRandomIndices(size_t detections_number);
-            VelocityProfile FindIterationVelocity(uint first, uint second);
+            const VelocityProfile & FindIterationVelocity(const RadarDetection & first, const RadarDetection & second);
             std::tuple<uint, float> CalculateIniliersAndFitQuality(const RadarScan & radar_scan, const VelocityProfile & velocity_profile);
 
+            VelocityEstimatorCalibration calibration_;
             uint best_iniliers_number_ = 0u;
             float best_quality_ = std::numeric_limits<float>::infinity();
             VelocityProfile best_velocity_profile_;

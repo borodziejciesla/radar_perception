@@ -18,7 +18,7 @@ namespace measurements::radar {
         : calibration_{calibration}
         , dealiaser_{std::make_unique<Dealiaser>(calibration_.dealiaser_calibration)}
         , detection_classifier_{std::make_unique<DetectionClassifier>()}
-        , velocity_estimator_{std::make_unique<VelocityEstimator>()} {
+        , velocity_estimator_{std::make_unique<VelocityEstimator>(calibration.velocity_estimator_calibration)} {
     }
 
     RadarProcessor::~RadarProcessor(void) {}
