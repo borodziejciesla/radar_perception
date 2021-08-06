@@ -29,10 +29,10 @@ namespace measurements::radar
             explicit VelocityEstimator(const VelocityEstimatorCalibration & calibration);
             ~VelocityEstimator(void);
 
-            const VelocityProfile & Run(const RadarScan & radar_scan);
+            const std::optional<VelocityProfile> & Run(const RadarScan & radar_scan);
 
         private:
-            std::tuple<uint, uint> GetRandomIndices(const RadarScan & radar_scan);
+            std::optional<std::tuple<uint, uint>> GetRandomIndices(const RadarScan & radar_scan);
             const VelocityProfile & FindIterationVelocity(const RadarDetection & first, const RadarDetection & second);
             std::tuple<uint, float> CalculateIniliersAndFitQuality(const RadarScan & radar_scan, const VelocityProfile & velocity_profile);
 

@@ -25,12 +25,15 @@ namespace measurements::radar
     VelocityEstimator::~VelocityEstimator(void) {
     }
 
-    const VelocityProfile & VelocityEstimator::Run(const RadarScan & radar_scan) {
+    const std::optional<VelocityProfile> & VelocityEstimator::Run(const RadarScan & radar_scan) {
         best_iniliers_number_ = 0u;
         best_quality_ = std::numeric_limits<float>::infinity();
 
         for (auto index = 0u; index < calibration_.maximum_iterations_number; index++) {
-            auto [first, second] = GetRandomIndices(radar_scan);
+            auto indices = GetRandomIndices(radar_scan);
+            if (!indices.has_value())
+                continue;
+            auto [first, second] = indices.value();
             auto iteration_velocity_profile = FindIterationVelocity(radar_scan.detections.at(first), radar_scan.detections.at(second));
             auto [iniliers_number, fit_quality] = CalculateIniliersAndFitQuality(radar_scan, iteration_velocity_profile);
 
@@ -41,10 +44,13 @@ namespace measurements::radar
             }
         }
 
-        return best_velocity_profile_;
+        if (best_iniliers_number_ == 0u)
+            return std::nullopt;
+        else
+            return best_velocity_profile_;
     }
 
-    std::tuple<uint, uint> VelocityEstimator::GetRandomIndices(const RadarScan & radar_scan) {
+    std::optional<std::tuple<uint, uint>> VelocityEstimator::GetRandomIndices(const RadarScan & radar_scan) {
         std::vector<uint> indices = std::vector<uint>(radar_scan.detections.size());
         std::iota(indices.begin(), indices.end(), 0u);
         std::random_shuffle(indices.begin(), indices.end());
@@ -54,11 +60,11 @@ namespace measurements::radar
         };
 
         auto first_dealiased = std::find_if(indices.begin(), indices.end(), check_if_dealiased);
-        //if (first_dealiased != indices.end())
-        //    return std::nullopt;
+        if (first_dealiased == indices.end())
+            return std::nullopt;
         auto second_dealiased = std::find_if(first_dealiased + 1, indices.end(), check_if_dealiased);
-        //if (second_dealiased != indices.end())
-        //    return std::nullopt;
+        if (second_dealiased == indices.end())
+            return std::nullopt;
 
         return std::make_tuple(*first_dealiased, *second_dealiased);
     }
@@ -98,8 +104,8 @@ namespace measurements::radar
             }
         };
         
-        auto fit_quality_sum = std::accumulate(dealiased_detections.begin(), dealiased_detections.end(), 0.0f, accumulator_function)
-        //radar_scan.detections.begin(), radar_scan.detections.end(), 0.0f, accumulator_function);
+        //auto fit_quality_sum = std::accumulate(dealiased_detections.begin(), dealiased_detections.end(), 0.0f, accumulator_function)
+        auto fit_quality_sum = std::accumulate(radar_scan.detections.begin(), radar_scan.detections.end(), 0.0f, accumulator_function);
         auto fit_quality_average = (iniliers_number == 0) ? 0.0f : fit_quality_sum / static_cast<float>(iniliers_number);
 
         return std::make_tuple(iniliers_number, fit_quality_average);

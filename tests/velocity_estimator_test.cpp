@@ -47,6 +47,7 @@ TEST_F(VelocityEstimatorTests, RunTest)
     measurements::radar::VelocityEstimator velocity_estimator = measurements::radar::VelocityEstimator(calibrations_);
     auto vp = velocity_estimator.Run(scan);
 
-    EXPECT_NEAR(vp.vx, vx, 1e-4);
-    EXPECT_NEAR(vp.vy, vy, 1e-4);
+    EXPECT_TRUE(vp.has_value());
+    EXPECT_NEAR(vp->vx, vx, 1e-4);
+    EXPECT_NEAR(vp->vy, vy, 1e-4);
 }
