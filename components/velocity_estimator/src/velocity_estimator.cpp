@@ -50,13 +50,13 @@ namespace measurements::radar
         std::random_shuffle(indices.begin(), indices.end());
 
         auto check_if_dealiased = [=](const uint index) -> bool {
-            return radar_scan.detections.at(index).dealiasing_status != DealiasingStatus::NON_DEALIASED;
+            return radar_scan.detections.at(index).dealiasing_status != DealiasingStatus::NonDealiased;
         };
 
         auto first_dealiased = std::find_if(indices.begin(), indices.end(), check_if_dealiased);
         //if (first_dealiased != indices.end())
         //    return std::nullopt;
-        auto second_dealiased = std::find_if(first_dealiased, indices.end(), check_if_dealiased);
+        auto second_dealiased = std::find_if(first_dealiased + 1, indices.end(), check_if_dealiased);
         //if (second_dealiased != indices.end())
         //    return std::nullopt;
 
@@ -84,6 +84,8 @@ namespace measurements::radar
     }
 
     std::tuple<uint, float> VelocityEstimator::CalculateIniliersAndFitQuality(const RadarScan & radar_scan, const VelocityProfile & velocity_profile) {
+        auto dealiased_detections = std::ranges::find(radar_scan.detections, DealiasingStatus::NonDealiased, &RadarDetection::dealiasing_status);
+                
         auto iniliers_number = 0u;
         auto accumulator_function = [velocity_profile,&iniliers_number](float accumulator, const RadarDetection & detection) -> float {
             auto model_range_rate = RangeRate2D(detection.azimuth, velocity_profile);
@@ -96,7 +98,8 @@ namespace measurements::radar
             }
         };
         
-        auto fit_quality_sum = std::accumulate(radar_scan.detections.begin(), radar_scan.detections.end(), 0.0f, accumulator_function);
+        auto fit_quality_sum = std::accumulate(dealiased_detections.begin(), dealiased_detections.end(), 0.0f, accumulator_function)
+        //radar_scan.detections.begin(), radar_scan.detections.end(), 0.0f, accumulator_function);
         auto fit_quality_average = (iniliers_number == 0) ? 0.0f : fit_quality_sum / static_cast<float>(iniliers_number);
 
         return std::make_tuple(iniliers_number, fit_quality_average);

@@ -39,6 +39,7 @@ TEST_F(VelocityEstimatorTests, RunTest)
             detection.range_rate = vx * std::cos(azimuth) + vy * std::sin(azimuth);
             detection.range_rate_std = 0.1f;
             detection.azimuth = azimuth;
+            detection.dealiasing_status = measurements::radar::DealiasingStatus::StaticVelocityProfileDealiased;
             return detection;
         }
     );
@@ -46,6 +47,6 @@ TEST_F(VelocityEstimatorTests, RunTest)
     measurements::radar::VelocityEstimator velocity_estimator = measurements::radar::VelocityEstimator(calibrations_);
     auto vp = velocity_estimator.Run(scan);
 
-    EXPECT_FLOAT_EQ(vp.vx, vx);
-    EXPECT_FLOAT_EQ(vp.vy, vy);
+    EXPECT_NEAR(vp.vx, vx, 1e-4);
+    EXPECT_NEAR(vp.vy, vy, 1e-4);
 }

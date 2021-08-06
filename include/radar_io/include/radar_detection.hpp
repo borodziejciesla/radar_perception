@@ -27,8 +27,8 @@ namespace measurements::radar
         float elevaion_std = 0.0f;
         float range_rate_std = 0.0f;
 
-        DealiasingStatus dealiasing_status = DealiasingStatus::NON_DEALIASED;
-        MovingStatus moving_status = MovingStatus::AMBIGUOUS;
+        DealiasingStatus dealiasing_status = DealiasingStatus::NonDealiased;
+        MovingStatus moving_status = MovingStatus::Ambiguous;
     };
 }   // namespace measurements::radar
 

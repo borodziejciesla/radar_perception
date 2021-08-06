@@ -14,9 +14,9 @@ namespace measurements::radar
 {
     enum class DealiasingStatus
     {
-        STATIC_VELOCITY_PROFILE_DEALIASING = 0u,
-        MOVING_OBJECT_DEALIASING = 1u,
-        NON_DEALIASED = 2u
+        StaticVelocityProfileDealiased = 0u,
+        MovingObjectDealiased = 1u,
+        NonDealiased = 2u
     };
 }   // namespace measurements::radar
 

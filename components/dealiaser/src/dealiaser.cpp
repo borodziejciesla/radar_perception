@@ -31,17 +31,17 @@ namespace measurements::radar
             
             if (std::abs(rr_model - detection.range_rate) < calibrations_.dealiaser_threshold)
             {
-                detection.dealiasing_status = DealiasingStatus::STATIC_VELOCITY_PROFILE_DEALIASING;
+                detection.dealiasing_status = DealiasingStatus::StaticVelocityProfileDealiased;
             }
             else if (std::abs(rr_model - (detection.range_rate + radar_scan.aliasing_period)) < calibrations_.dealiaser_threshold)
             {
                 detection.range_rate += radar_scan.aliasing_period;
-                detection.dealiasing_status = DealiasingStatus::STATIC_VELOCITY_PROFILE_DEALIASING;
+                detection.dealiasing_status = DealiasingStatus::StaticVelocityProfileDealiased;
             }
             else if (std::abs(rr_model - (detection.range_rate - radar_scan.aliasing_period)) < calibrations_.dealiaser_threshold)
             {
                 detection.range_rate -= radar_scan.aliasing_period;
-                detection.dealiasing_status = DealiasingStatus::STATIC_VELOCITY_PROFILE_DEALIASING;
+                detection.dealiasing_status = DealiasingStatus::StaticVelocityProfileDealiased;
             }
             else
             {
