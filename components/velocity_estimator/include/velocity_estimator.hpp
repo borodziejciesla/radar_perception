@@ -15,6 +15,7 @@
 #include <tuple>
 #include <limits>
 #include <vector>
+#include <optional>
 
 #include "velocity_estimator_calibrations.hpp"
 
@@ -31,7 +32,7 @@ namespace measurements::radar
             const VelocityProfile & Run(const RadarScan & radar_scan);
 
         private:
-            std::tuple<uint, uint> GetRandomIndices(size_t detections_number);
+            std::tuple<uint, uint> GetRandomIndices(const RadarScan & radar_scan);
             const VelocityProfile & FindIterationVelocity(const RadarDetection & first, const RadarDetection & second);
             std::tuple<uint, float> CalculateIniliersAndFitQuality(const RadarScan & radar_scan, const VelocityProfile & velocity_profile);
 

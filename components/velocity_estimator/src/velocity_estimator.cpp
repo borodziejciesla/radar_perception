@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <cmath>
 #include <numeric>
+#include <ranges>
 
 #include "range_rate.hpp"
 
@@ -29,7 +30,7 @@ namespace measurements::radar
         best_quality_ = std::numeric_limits<float>::infinity();
 
         for (auto index = 0u; index < calibration_.maximum_iterations_number; index++) {
-            auto [first, second] = GetRandomIndices(radar_scan.detections.size());
+            auto [first, second] = GetRandomIndices(radar_scan);
             auto iteration_velocity_profile = FindIterationVelocity(radar_scan.detections.at(first), radar_scan.detections.at(second));
             auto [iniliers_number, fit_quality] = CalculateIniliersAndFitQuality(radar_scan, iteration_velocity_profile);
 
@@ -43,11 +44,23 @@ namespace measurements::radar
         return best_velocity_profile_;
     }
 
-    std::tuple<uint, uint> VelocityEstimator::GetRandomIndices(size_t detections_number) {
-        std::vector<uint> indices = std::vector<uint>(detections_number);
+    std::tuple<uint, uint> VelocityEstimator::GetRandomIndices(const RadarScan & radar_scan) {
+        std::vector<uint> indices = std::vector<uint>(radar_scan.detections.size());
         std::iota(indices.begin(), indices.end(), 0u);
         std::random_shuffle(indices.begin(), indices.end());
-        return std::make_tuple(indices.at(0), indices.at(1));
+
+        auto check_if_dealiased = [=](const uint index) -> bool {
+            return radar_scan.detections.at(index).dealiasing_status != DealiasingStatus::NON_DEALIASED;
+        };
+
+        auto first_dealiased = std::find_if(indices.begin(), indices.end(), check_if_dealiased);
+        //if (first_dealiased != indices.end())
+        //    return std::nullopt;
+        auto second_dealiased = std::find_if(first_dealiased, indices.end(), check_if_dealiased);
+        //if (second_dealiased != indices.end())
+        //    return std::nullopt;
+
+        return std::make_tuple(*first_dealiased, *second_dealiased);
     }
 
     const VelocityProfile & VelocityEstimator::FindIterationVelocity(const RadarDetection & first, const RadarDetection & second) {
