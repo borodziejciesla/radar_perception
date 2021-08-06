@@ -24,17 +24,28 @@ endforeach ()
 # Run CppCheck
 find_program(CMAKE_CXX_CPPCHECK NAMES cppcheck)
 
-add_custom_target(
-    cppcheck
-    COMMAND ${CMAKE_CXX_CPPCHECK}
-    --enable=all#warning,performance,portability,information,missingInclude
-    --std=c++20
-    --inconclusive
-    --library=qt.cfg
-    --template="[{severity}][{id}] {message} {callstack} \(On {file}:{line}\)"
-    --verbose
-    --inline-suppr
-    --force
-    --output-file=${CMAKE_SOURCE_DIR}/cppcheck_output.txt
-    ${ALL_SOURCE_FILES}
-)
+if(CMAKE_CXX_CPPCHECK)
+    add_custom_target(cppcheck
+        COMMAND ${CMAKE_CXX_CPPCHECK}
+            --enable=all#warning,performance,portability,information,missingInclude
+            --std=c++20
+            --inconclusive
+            #--library=qt.cfg
+            #--template="[{severity}][{id}] {message} {callstack} \(On {file}:{line}\)"
+            --verbose
+            --inline-suppr
+            --force
+            #--output-file=${CMAKE_SOURCE_DIR}/cppcheck_output.txt
+            --xml
+            --xml-version=2
+            2> ${CMAKE_SOURCE_DIR}/cppcheck_output.xml
+            ${ALL_SOURCE_FILES}
+    )
+
+    add_custom_target(cppcheck_html
+        COMMAND cppcheck-htmlreport
+            --file=${CMAKE_SOURCE_DIR}/cppcheck_output.xml
+            --report-dir=${CMAKE_SOURCE_DIR}/cppcheck_output_html
+            --source-dir=.
+    )
+endif()

@@ -7,16 +7,15 @@
  * this file. If not, please write to: , or visit :
  */
 
-#include "detection_classifier.hpp"
+#ifndef INCLUDE_RADAR_IO_INCLUDE_DEALIASER_CALIBRATIONS_HPP_
+#define INCLUDE_RADAR_IO_INCLUDE_DEALIASER_CALIBRATIONS_HPP_
 
 namespace measurements::radar
 {
-    DetectionClassifier::DetectionClassifier(void)
-    {}
-
-    DetectionClassifier::~DetectionClassifier(void)
-    {}
-
-    void DetectionClassifier::Run(void)
-    {}
+    struct DealiaserCalibration
+    {
+        float dealiaser_threshold = 0.0f;
+    };
 }   // namespace measurements::radar
+
+#endif // INCLUDE_RADAR_IO_INCLUDE_DEALIASER_CALIBRATIONS_HPP_

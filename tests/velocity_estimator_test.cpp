@@ -1,31 +1,32 @@
 #include "gtest/gtest.h"
 
-#include <memory>
+#include <algorithm>
+#include <vector>
 #include <numeric>
 #include <cmath>
 
-#include "radar_processor.hpp"
+#include "velocity_estimator.hpp"
+#include "velocity_estimator_calibrations.hpp"
 
-class RadarProcessorTests : public ::testing::Test
+class VelocityEstimatorTests : public ::testing::Test
 {
     protected:
         void SetUp(void) override
         {}
 
-        measurements::radar::ProcessorCalibration calibrations_;
+        measurements::radar::VelocityEstimatorCalibration calibrations_;
 };
 
-TEST_F(RadarProcessorTests, ConstructorTest)
+TEST_F(VelocityEstimatorTests, ConstructorTest)
 {
-    std::unique_ptr<measurements::radar::RadarProcessor> rp;
-    EXPECT_NO_THROW(rp = std::make_unique<measurements::radar::RadarProcessor>(calibrations_));
+    std::unique_ptr<measurements::radar::VelocityEstimator> velocity_estimator;
+    EXPECT_NO_THROW(velocity_estimator = std::make_unique<measurements::radar::VelocityEstimator>(calibrations_));
 }
 
-TEST_F(RadarProcessorTests, RunTest)
+TEST_F(VelocityEstimatorTests, RunTest)
 {
     measurements::radar::RadarScan scan;
     scan.detections.resize(10);
-
     auto vx = 10.0f;
     auto vy = 0.5f;
     std::vector<float> azimuths(scan.detections.size());
@@ -43,8 +44,10 @@ TEST_F(RadarProcessorTests, RunTest)
         }
     );
     
-    measurements::radar::RadarProcessor rp(calibrations_);
-    rp.ProcessScan(scan);
+    measurements::radar::VelocityEstimator velocity_estimator = measurements::radar::VelocityEstimator(calibrations_);
+    auto vp = velocity_estimator.Run(scan);
 
-    EXPECT_TRUE(true);
+    EXPECT_TRUE(vp.has_value());
+    EXPECT_NEAR(vp->vx, vx, 1e-4);
+    EXPECT_NEAR(vp->vy, vy, 1e-4);
 }

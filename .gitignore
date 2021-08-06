@@ -42,5 +42,4 @@ log/
 .cccc/
 
 # Other files
-cppcheck_output.txt
-
+cppcheck_output*

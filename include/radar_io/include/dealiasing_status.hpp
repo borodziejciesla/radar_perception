@@ -7,16 +7,17 @@
  * this file. If not, please write to: , or visit :
  */
 
-#include "detection_classifier.hpp"
+#ifndef INCLUDE_RADAR_IO_INCLUDE_DEALIASING_STATUS_HPP_
+#define INCLUDE_RADAR_IO_INCLUDE_DEALIASING_STATUS_HPP_
 
 namespace measurements::radar
 {
-    DetectionClassifier::DetectionClassifier(void)
-    {}
-
-    DetectionClassifier::~DetectionClassifier(void)
-    {}
-
-    void DetectionClassifier::Run(void)
-    {}
+    enum class DealiasingStatus
+    {
+        StaticVelocityProfileDealiased = 0u,
+        MovingObjectDealiased = 1u,
+        NonDealiased = 2u
+    };
 }   // namespace measurements::radar
+
+#endif // INCLUDE_RADAR_IO_INCLUDE_DEALIASING_STATUS_HPP_

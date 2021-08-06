@@ -7,16 +7,16 @@
  * this file. If not, please write to: , or visit :
  */
 
-#include "detection_classifier.hpp"
+#ifndef INCLUDE_RADAR_IO_INCLUDE_VELOCITY_ESTIMATOR_CALIBRATIONS_HPP_
+#define INCLUDE_RADAR_IO_INCLUDE_VELOCITY_ESTIMATOR_CALIBRATIONS_HPP_
 
 namespace measurements::radar
 {
-    DetectionClassifier::DetectionClassifier(void)
-    {}
-
-    DetectionClassifier::~DetectionClassifier(void)
-    {}
-
-    void DetectionClassifier::Run(void)
-    {}
+    struct VelocityEstimatorCalibration
+    {
+        unsigned int maximum_iterations_number = 5u;
+        float inlier_threshold = 0.5f;
+    };
 }   // namespace measurements::radar
+
+#endif // INCLUDE_RADAR_IO_INCLUDE_VELOCITY_ESTIMATOR_CALIBRATIONS_HPP_
