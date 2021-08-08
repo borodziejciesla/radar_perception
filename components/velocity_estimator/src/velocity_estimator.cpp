@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <cmath>
 #include <numeric>
+#include <ranges>
 
 #include "range_rate.hpp"
 
