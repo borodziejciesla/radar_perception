@@ -6,6 +6,8 @@ project(${PROJECT_NAME})
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_CXX_COMPILER /usr/bin/g++-10 CACHE PATH "")
+
 set(DEFAULT_BUILD_TYPE "Debug")
 
 ########### Add sources and includes ###########
