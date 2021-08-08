@@ -9,7 +9,6 @@
 
 #include "dealiaser.hpp"
 
-#include <ranges>
 #include <algorithm>
 #include <cmath>
 
