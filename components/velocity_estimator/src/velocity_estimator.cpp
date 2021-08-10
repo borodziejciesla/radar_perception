@@ -25,7 +25,7 @@ namespace measurements::radar
     VelocityEstimator::~VelocityEstimator(void) {
     }
 
-    const std::optional<VelocityProfile> & VelocityEstimator::Run(const RadarScan & radar_scan) {
+    std::optional<VelocityProfile> VelocityEstimator::Run(const RadarScan & radar_scan) {
         best_iniliers_number_ = 0u;
         best_quality_ = std::numeric_limits<float>::infinity();
 
