@@ -25,7 +25,7 @@ namespace measurements::radar
     VelocityEstimator::~VelocityEstimator(void) {
     }
 
-    const std::optional<VelocityProfile> & VelocityEstimator::Run(const RadarScan & radar_scan) {
+    std::optional<VelocityProfile> VelocityEstimator::Run(const RadarScan & radar_scan) {
         best_iniliers_number_ = 0u;
         best_quality_ = std::numeric_limits<float>::infinity();
 
@@ -90,23 +90,26 @@ namespace measurements::radar
     }
 
     std::tuple<uint, float> VelocityEstimator::CalculateIniliersAndFitQuality(const RadarScan & radar_scan, const VelocityProfile & velocity_profile) {
-        auto dealiased_detections = std::ranges::find(radar_scan.detections, DealiasingStatus::NonDealiased, &RadarDetection::dealiasing_status);
-                
         auto iniliers_number = 0u;
-        auto accumulator_function = [velocity_profile,&iniliers_number](float accumulator, const RadarDetection & detection) -> float {
+        auto is_inlier = std::ranges::views::filter([=, &iniliers_number](const RadarDetection & detection) {
             auto model_range_rate = RangeRate2D(detection.azimuth, velocity_profile);
             auto distance_from_model = std::abs(detection.range_rate - model_range_rate);
             if (distance_from_model < 0.5f) {
                 iniliers_number++;
-                return accumulator + std::pow(distance_from_model, 2.0f);
+                return true;
             } else {
-                return accumulator;
+                return false;
             }
-        };
-        
-        //auto fit_quality_sum = std::accumulate(dealiased_detections.begin(), dealiased_detections.end(), 0.0f, accumulator_function)
-        auto fit_quality_sum = std::accumulate(radar_scan.detections.begin(), radar_scan.detections.end(), 0.0f, accumulator_function);
-        auto fit_quality_average = (iniliers_number == 0) ? 0.0f : fit_quality_sum / static_cast<float>(iniliers_number);
+        });
+        auto distance_to_profile = std::ranges::views::transform([=](const RadarDetection & detection) {
+            auto model_range_rate = RangeRate2D(detection.azimuth, velocity_profile);
+            auto distance_from_model = std::abs(detection.range_rate - model_range_rate);
+            return std::pow(distance_from_model, 2.0f);
+        });
+
+        auto inliers_view = radar_scan.detections | is_inlier | distance_to_profile;
+        auto fit_quality_sum = std::accumulate(inliers_view.begin(), inliers_view.end(), 0.0f);
+        auto fit_quality_average = fit_quality_sum / static_cast<float>(iniliers_number);
 
         return std::make_tuple(iniliers_number, fit_quality_average);
     }

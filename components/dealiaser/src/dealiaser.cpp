@@ -9,7 +9,6 @@
 
 #include "dealiaser.hpp"
 
-#include <ranges>
 #include <algorithm>
 #include <cmath>
 
@@ -26,7 +25,7 @@ namespace measurements::radar
 
     void Dealiaser::Run(RadarScan & radar_scan)
     {
-        auto dealias = [=](RadarDetection & detection) {
+        auto dealias = [=,this](RadarDetection & detection) {
             auto rr_model = RangeRate2D(detection.azimuth, velocity_profile_);
             
             if (std::abs(rr_model - detection.range_rate) < calibrations_.dealiaser_threshold)

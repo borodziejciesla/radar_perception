@@ -29,7 +29,7 @@ namespace measurements::radar
             explicit VelocityEstimator(const VelocityEstimatorCalibration & calibration);
             ~VelocityEstimator(void);
 
-            const std::optional<VelocityProfile> & Run(const RadarScan & radar_scan);
+            std::optional<VelocityProfile> Run(const RadarScan & radar_scan);
 
         private:
             std::optional<std::tuple<uint, uint>> GetRandomIndices(const RadarScan & radar_scan);
