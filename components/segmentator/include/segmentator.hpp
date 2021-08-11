@@ -10,6 +10,8 @@
 #ifndef COMPONENTS_SEGMENTATOR_INCLUDE_SEGMENTATOR_HPP_
 #define COMPONENTS_SEGMENTATOR_INCLUDE_SEGMENTATOR_HPP_
 
+#include <optional>
+
 #include "segmentator_calibration.hpp"
 #include "radar_scan.hpp"
 
@@ -25,7 +27,7 @@ namespace measurements::radar
 
         private:
             void DbScan(RadarScan & radar_scan);
-            int SelectInitialPointIndex(RadarScan & radar_scan);
+            std::optional<size_t> SelectInitialPointIndex(RadarScan & radar_scan);
             void FindAvailablePoints(int initial_point_index, RadarScan & radar_scan);
 
             SegmentatorCalibration calibration_;

@@ -9,6 +9,8 @@
 
 #include "segmentator.hpp"
 
+#include <algorithm>
+
 namespace measurements::radar
 {
     Segmentator::Segmentator(const SegmentatorCalibration & calibration)
@@ -25,12 +27,23 @@ namespace measurements::radar
     void Segmentator::DbScan(RadarScan & radar_scan) {
         while (segmented_detections_number < radar_scan.detections.size()) {
             auto initial_point_index = SelectInitialPointIndex(radar_scan);
-            FindAvailablePoints(initial_point_index, radar_scan);
+            if (!initial_point_index.has_value())
+                break;
+            FindAvailablePoints(initial_point_index.value(), radar_scan);
         }
     }
 
-    int Segmentator::SelectInitialPointIndex(RadarScan & radar_scan) {
-        return 0;
+    std::optional<size_t> Segmentator::SelectInitialPointIndex(RadarScan & radar_scan) {
+        auto non_segmented_element = std::find_if(radar_scan.detections.begin(), radar_scan.detections.end(),
+          [](const RadarDetection & detection) -> bool {
+              detection.segment_id == 0u;
+          }  
+        );
+
+        if (non_segmented_element != radar_scan.detections.end())
+            return non_segmented_element->id - 1u;
+        else
+           return std::nullopt;
     }
 
     void Segmentator::FindAvailablePoints(int initial_point_index, RadarScan & radar_scan) {

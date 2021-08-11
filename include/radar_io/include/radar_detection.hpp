@@ -17,6 +17,8 @@ namespace measurements::radar
 {
     struct RadarDetection
     {
+        size_t id = 0u;
+
         float range = 0.0f;
         float azimuth = 0.0f;
         float elevaion = 0.0f;
@@ -29,6 +31,8 @@ namespace measurements::radar
 
         DealiasingStatus dealiasing_status = DealiasingStatus::NonDealiased;
         MovingStatus moving_status = MovingStatus::Ambiguous;
+
+        size_t segment_id = 0u;
     };
 }   // namespace measurements::radar
 
