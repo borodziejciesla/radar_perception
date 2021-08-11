@@ -30,6 +30,7 @@ namespace measurements::radar
             if (!initial_point_index.has_value())
                 break;
             FindAvailablePoints(initial_point_index.value(), radar_scan);
+            SetNewSegment(radar_scan);
         }
     }
 
@@ -47,5 +48,9 @@ namespace measurements::radar
     }
 
     void Segmentator::FindAvailablePoints(int initial_point_index, RadarScan & radar_scan) {
+    }
+
+    void Segmentator::SetNewSegment(RadarScan & radar_scan) {
+        current_segment_id_++;
     }
 }   //  namespace measurements::radar

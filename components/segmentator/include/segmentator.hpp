@@ -29,9 +29,11 @@ namespace measurements::radar
             void DbScan(RadarScan & radar_scan);
             std::optional<size_t> SelectInitialPointIndex(RadarScan & radar_scan);
             void FindAvailablePoints(int initial_point_index, RadarScan & radar_scan);
+            void SetNewSegment(RadarScan & radar_scan);
 
             SegmentatorCalibration calibration_;
             size_t segmented_detections_number = 0u;
+            size_t current_segment_id_ = 0u;
     };
 }   // namespace measurements::radar
 
