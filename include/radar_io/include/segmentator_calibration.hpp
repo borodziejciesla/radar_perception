@@ -7,8 +7,8 @@
  * this file. If not, please write to: , or visit :
  */
 
-#ifndef INCLUDE_RADAR_IO_INCLUDE_SEGMENTATOR_CALIBRATIONS_HPP_
-#define INCLUDE_RADAR_IO_INCLUDE_SEGMENTATOR_CALIBRATIONS_HPP_
+#ifndef INCLUDE_RADAR_IO_INCLUDE_SEGMENTATOR_CALIBRATION_HPP_
+#define INCLUDE_RADAR_IO_INCLUDE_SEGMENTATOR_CALIBRATION_HPP_
 
 namespace measurements::radar
 {
@@ -19,4 +19,4 @@ namespace measurements::radar
     };
 }   // namespace measurements::radar
 
-#endif // INCLUDE_RADAR_IO_INCLUDE_SEGMENTATOR_CALIBRATIONS_HPP_
+#endif // INCLUDE_RADAR_IO_INCLUDE_SEGMENTATOR_CALIBRATION_HPP_

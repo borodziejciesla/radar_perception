@@ -21,9 +21,13 @@ namespace measurements::radar
             explicit Segmentator(const SegmentatorCalibration & calibration);
             ~Segmentator(void);
 
-            void Run(void);
+            void Run(RadarScan & radar_scan);
 
         private:
+            void DbScan(RadarScan & radar_scan);
+            int SelectInitialPoint(RadarScan & radar_scan);
+            void FindAvailablePoints(int initial_point, RadarScan & radar_scan);
+
             SegmentatorCalibration calibration_;
     };
 }   // namespace measurements::radar
