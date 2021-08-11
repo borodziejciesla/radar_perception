@@ -19,15 +19,20 @@ namespace measurements::radar
     }
 
     void Segmentator::Run(RadarScan & radar_scan) {
+        DbScan(radar_scan);   
     }
 
     void Segmentator::DbScan(RadarScan & radar_scan) {
+        while (segmented_detections_number < radar_scan.detections.size()) {
+            auto initial_point_index = SelectInitialPointIndex(radar_scan);
+            FindAvailablePoints(initial_point_index, radar_scan);
+        }
     }
 
-    int Segmentator::SelectInitialPoint(RadarScan & radar_scan) {
+    int Segmentator::SelectInitialPointIndex(RadarScan & radar_scan) {
         return 0;
     }
 
-    void Segmentator::FindAvailablePoints(int initial_point, RadarScan & radar_scan) {
+    void Segmentator::FindAvailablePoints(int initial_point_index, RadarScan & radar_scan) {
     }
 }   //  namespace measurements::radar
