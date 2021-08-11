@@ -38,14 +38,14 @@ if(CMAKE_CXX_CPPCHECK)
             #--output-file=${CMAKE_SOURCE_DIR}/cppcheck_output.txt
             --xml
             --xml-version=2
-            2> ${CMAKE_SOURCE_DIR}/cppcheck_output.xml
+            2> ${CMAKE_CURRENT_BINARY_DIR}/cppcheck_output.xml
             ${ALL_SOURCE_FILES}
     )
 
     add_custom_target(cppcheck_html
         COMMAND cppcheck-htmlreport
-            --file=${CMAKE_SOURCE_DIR}/cppcheck_output.xml
-            --report-dir=${CMAKE_SOURCE_DIR}/cppcheck_output_html
+            --file=${CMAKE_CURRENT_BINARY_DIR}/cppcheck_output.xml
+            --report-dir=${CMAKE_CURRENT_BINARY_DIR}/cppcheck_output_html
             --source-dir=.
     )
 endif()

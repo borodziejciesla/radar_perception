@@ -7,8 +7,8 @@
  * this file. If not, please write to: , or visit :
  */
 
-#ifndef INCLUDE_RADAR_IO_INCLUDE_Moving_STATUS_HPP_
-#define INCLUDE_RADAR_IO_INCLUDE_Moving_STATUS_HPP_
+#ifndef INCLUDE_RADAR_IO_INCLUDE_MOVING_STATUS_HPP_
+#define INCLUDE_RADAR_IO_INCLUDE_MOVING_STATUS_HPP_
 
 namespace measurements::radar
 {
@@ -20,4 +20,4 @@ namespace measurements::radar
     };
 }   // namespace measurements::radar
 
-#endif // INCLUDE_RADAR_IO_INCLUDE_Moving_STATUS_HPP_
+#endif // INCLUDE_RADAR_IO_INCLUDE_MOVING_STATUS_HPP_

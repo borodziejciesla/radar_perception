@@ -10,6 +10,13 @@ set(CMAKE_CXX_COMPILER /usr/bin/g++-10 CACHE PATH "")
 
 set(DEFAULT_BUILD_TYPE "Debug")
 
+if ( CMAKE_COMPILER_IS_GNUCC )
+    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic")
+endif()
+if ( MSVC )
+    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} /W4")
+endif()
+
 ########### Add sources and includes ###########
 include(GNUInstallDirs)
 
