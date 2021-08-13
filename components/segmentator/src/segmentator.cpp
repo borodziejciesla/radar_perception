@@ -72,8 +72,7 @@ namespace measurements::radar
         auto last_index = initial_point_index;
         std::transform(non_segmented_view.begin(), non_segmented_view.end(), non_segmented_view.begin(),
             [&,this](RadarDetection & detection) {
-                auto distance = distance_matrix_(last_index, detection.id - 1u);
-                if (distance < calibration_.neighbourhood_threshold) {
+                if (distance_matrix_(last_index, detection.id - 1u) < calibration_.neighbourhood_threshold) {
                     detection.segment_id = current_segment_id_;
                     last_index = detection.id - 1u;
                     segmented_detections_number_++;

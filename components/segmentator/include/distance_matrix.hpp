@@ -7,8 +7,8 @@
  * this file. If not, please write to: , or visit :
  */
 
-#ifndef COMPONENTS_SEGMENTATOR_SRC_DISTANCE_MATRIX_HPP_
-#define COMPONENTS_SEGMENTATOR_SRC_DISTANCE_MATRIX_HPP_
+#ifndef COMPONENTS_SEGMENTATOR_INCLUDE_DISTANCE_MATRIX_HPP_
+#define COMPONENTS_SEGMENTATOR_INCLUDE_DISTANCE_MATRIX_HPP_
 
 #include <vector>
 
@@ -31,4 +31,4 @@ namespace measurements::radar
     };
 }   // namespace measurements::radar
 
-#endif // COMPONENTS_SEGMENTATOR_SRC_DISTANCE_MATRIX_HPP_
+#endif // COMPONENTS_SEGMENTATOR_INCLUDE_DISTANCE_MATRIX_HPP_
