@@ -25,6 +25,7 @@ add_library(${PROJECT_NAME}
 
     $<TARGET_OBJECTS:dealiaser>
     $<TARGET_OBJECTS:detection_classifier>
+    $<TARGET_OBJECTS:segmentator>
     $<TARGET_OBJECTS:velocity_estimator>
 )
 
@@ -42,6 +43,7 @@ target_include_directories(${PROJECT_NAME}
     PRIVATE
         $<TARGET_PROPERTY:dealiaser,INTERFACE_INCLUDE_DIRECTORIES>
         $<TARGET_PROPERTY:detection_classifier,INTERFACE_INCLUDE_DIRECTORIES>
+        $<TARGET_PROPERTY:segmentator,INTERFACE_INCLUDE_DIRECTORIES>
         $<TARGET_PROPERTY:velocity_estimator,INTERFACE_INCLUDE_DIRECTORIES>
 )
 

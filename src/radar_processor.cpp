@@ -11,6 +11,7 @@
 
 #include "dealiaser.hpp"
 #include "detection_classifier.hpp"
+#include "segmentator.hpp"
 #include "velocity_estimator.hpp"
 
 namespace measurements::radar {
@@ -18,6 +19,7 @@ namespace measurements::radar {
         : calibration_{calibration}
         , dealiaser_{std::make_unique<Dealiaser>(calibration_.dealiaser_calibration)}
         , detection_classifier_{std::make_unique<DetectionClassifier>()}
+        , segmentator_{std::make_unique<Segmentator>(calibration_.segmentator_calibration)}
         , velocity_estimator_{std::make_unique<VelocityEstimator>(calibration.velocity_estimator_calibration)} {
     }
 
