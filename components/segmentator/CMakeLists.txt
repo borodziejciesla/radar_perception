@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 add_library(segmentator
     src/segmentator.cpp
+    src/distance_matrix.cpp
 
     $<TARGET_OBJECTS:common>
 )

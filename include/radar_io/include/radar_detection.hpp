@@ -10,6 +10,8 @@
 #ifndef INCLUDE_RADAR_IO_INCLUDE_RADAR_DETECTION_HPP_
 #define INCLUDE_RADAR_IO_INCLUDE_RADAR_DETECTION_HPP_
 
+#include <stddef.h>
+
 #include "dealiasing_status.hpp"
 #include "moving_status.hpp"
 
@@ -28,6 +30,14 @@ namespace measurements::radar
         float azimuth_std = 0.0f;
         float elevaion_std = 0.0f;
         float range_rate_std = 0.0f;
+
+        float x = 0.0f;
+        float y = 0.0f;
+        float z = 0.0f;
+
+        float x_std = 0.0f;
+        float y_std = 0.0f;
+        float z_std = 0.0f;
 
         DealiasingStatus dealiasing_status = DealiasingStatus::NonDealiased;
         MovingStatus moving_status = MovingStatus::Ambiguous;
