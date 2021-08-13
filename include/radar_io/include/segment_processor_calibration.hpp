@@ -7,19 +7,14 @@
  * this file. If not, please write to: , or visit :
  */
 
-#ifndef INCLUDE_RADAR_IO_INCLUDE_COVARIANCE_HPP_
-#define INCLUDE_RADAR_IO_INCLUDE_COVARIANCE_HPP_
-
-#include <array>
+#ifndef INCLUDE_RADAR_IO_INCLUDE_SEGMENT_PROCESSOR_CALIBRATION_HPP_
+#define INCLUDE_RADAR_IO_INCLUDE_SEGMENT_PROCESSOR_CALIBRATION_HPP_
 
 namespace measurements::radar
 {
-    template <size_t size>
-    struct Covariance
+    struct SegmentProcessorCalibration
     {
-        std::array<float, size> covariance_diagonal = {};
-        std::array<float, (size) * (size - 1u) / 2u> covariance_lower_triangle = {};
     };
 }   // namespace measurements::radar
 
-#endif // INCLUDE_RADAR_IO_INCLUDE_COVARIANCE_HPP_
+#endif // INCLUDE_RADAR_IO_INCLUDE_SEGMENT_PROCESSOR_CALIBRATION_HPP_

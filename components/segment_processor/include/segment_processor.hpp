@@ -11,21 +11,27 @@
 #define COMPONENTS_SEGMENT_PROCESSOR_INCLUDE_SEGMENT_PROCESSOR_HPP_
 
 #include <tuple>
+#include <optional>
 
 #include "radar_scan.hpp"
 #include "guardrail.hpp"
 #include "moving_object.hpp"
+#include "segment_processor_calibration.hpp"
 
 namespace measurements::radar
 {
+    using MovingObjectsOption = std::optional<MovingObjects>;
+    using GuardrailsOption = std::optional<Guardrails>;
+
     class SegmentsProcessor
     {
         public:
-            SegmentsProcessor(void);
+            explicit SegmentsProcessor(const SegmentProcessorCalibration & calibration);
             ~SegmentsProcessor(void);
 
-            std::tuple<MovingObjects, Guardrails> ProcessSegments(const RadarScan & radar_scan);
+            std::tuple<MovingObjectsOption, GuardrailsOption> ProcessSegments(const RadarScan & radar_scan);
         private:
+            SegmentProcessorCalibration calibration_;
     };
 }   //  namespace measurements::radar
 

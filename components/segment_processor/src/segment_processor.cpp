@@ -11,12 +11,14 @@
 
 namespace measurements::radar
 {
-    SegmentsProcessor::SegmentsProcessor(void) {
+    SegmentsProcessor::SegmentsProcessor(const SegmentProcessorCalibration & calibration)
+        : calibration_{calibration} {
     }
 
     SegmentsProcessor::~SegmentsProcessor(void) {
     }
 
-    std::tuple<MovingObjects, Guardrails> SegmentsProcessor::ProcessSegments(const RadarScan & radar_scan) {
+    std::tuple<MovingObjectsOption, GuardrailsOption> SegmentsProcessor::ProcessSegments(const RadarScan & radar_scan) {
+        return std::tuple{std::nullopt, std::nullopt};
     }
 }   //  measurements::radar
