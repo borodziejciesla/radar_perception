@@ -68,7 +68,8 @@ TEST_F(SegmentsProcessorTests, ConstructorTest) {
 
 TEST_F(SegmentsProcessorTests, RunEmptyScanTest) {
     measurements::radar::RadarScan scan;
+    measurements::radar::VelocityProfile vp;
     measurements::radar::SegmentsProcessor processor(calibration_);
 
-    auto [objects, guardrials] = processor.ProcessSegments(scan);
+    auto [objects, guardrials] = processor.ProcessSegments(scan, vp);
 }

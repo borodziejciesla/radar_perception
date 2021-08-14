@@ -12,26 +12,35 @@
 
 #include <tuple>
 #include <optional>
+#include <variant>
 
 #include "radar_scan.hpp"
 #include "guardrail.hpp"
 #include "moving_object.hpp"
 #include "segment_processor_calibration.hpp"
+#include "velocity_profile.hpp"
 
 namespace measurements::radar
 {
-    using MovingObjectsOption = std::optional<MovingObjects>;
-    using GuardrailsOption = std::optional<Guardrails>;
-
     class SegmentsProcessor
     {
         public:
             explicit SegmentsProcessor(const SegmentProcessorCalibration & calibration);
             ~SegmentsProcessor(void);
 
-            std::tuple<MovingObjectsOption, GuardrailsOption> ProcessSegments(const RadarScan & radar_scan);
+            std::tuple<MovingObjects, Guardrails> ProcessSegments(const RadarScan & radar_scan, const VelocityProfile & velocity_profile);
+
         private:
+            using Segment = std::variant<MovingObject, Guardrail>;
+
+            Segment ProccessSegment(size_t segment_id, const RadarScan & radar_scan, const VelocityProfile & velocity_profile);
+            bool IsStaticSegment(auto segment, const VelocityProfile & velocity_profile) const;
+            MovingObject ProcessMovingObject(auto segment);
+            Guardrail ProcessGuardrail(auto segment);
+
             SegmentProcessorCalibration calibration_;
+            MovingObjects moving_objects_;
+            Guardrails guardrails_;
     };
 }   //  namespace measurements::radar
 

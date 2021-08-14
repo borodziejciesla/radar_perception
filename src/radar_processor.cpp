@@ -30,7 +30,7 @@ namespace measurements::radar {
     void RadarProcessor::ProcessScan(RadarScan & radar_scan) {
         dealiaser_->Run(radar_scan);
         detection_classifier_->Run();
-        velocity_estimator_->Run(radar_scan);
+        auto velocity_profile = velocity_estimator_->Run(radar_scan);
         //segmentator_->Run(radar_scan);
         //auto [objects, guardrials] = segmentatos_processor_->ProcessSegments(radar_scan);
     }
