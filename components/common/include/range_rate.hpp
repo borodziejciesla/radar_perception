@@ -15,7 +15,6 @@
 namespace measurements::radar
 {
     float RangeRate2D(const float azimuth, const VelocityProfile & velocity_prifle);
-    float RangeRate3D(const float azimuth, const float elevation, const VelocityProfile & velocity_prifle);
 }   // measurements::radar
 
 #endif  //  COMPONENTS_COMMON_INCLUDE_RANGE_RATE_HPP_
