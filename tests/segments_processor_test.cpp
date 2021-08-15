@@ -75,7 +75,7 @@ TEST_F(SegmentsProcessorTests, RunEmptyScanTest) {
     auto [objects, guardrials] = processor.ProcessSegments(scan, vp);
 }
 
-TEST_F(SegmentsProcessorTests, RunStaticRadarOneSegmentTest) {
+TEST_F(SegmentsProcessorTests, RunStaticRadarOneStaticSegmentTest) {
     measurements::radar::RadarScan scan;
     for (auto index = 0u; index < 10u; index++) {
         measurements::radar::RadarDetection detection;
@@ -103,6 +103,66 @@ TEST_F(SegmentsProcessorTests, RunStaticRadarOneSegmentTest) {
     measurements::radar::SegmentsProcessor processor(calibration_);
     auto [objects, guardrials] = processor.ProcessSegments(scan, vp);
 
+    // Objects
     EXPECT_TRUE(objects.empty());
+
+    // Guardrails
     EXPECT_EQ(guardrials.size(), 1u);
+    EXPECT_FLOAT_EQ(guardrials.at(0).range.start, 5.0f);
+    EXPECT_FLOAT_EQ(guardrials.at(0).range.end, 9.5f);
+}
+
+TEST_F(SegmentsProcessorTests, RunStaticRadarTwoStaticSegmentTest) {
+    measurements::radar::RadarScan scan;
+    // first segment
+    auto det_id = 0u;
+    for (auto index = 0u; index < 10u; index++) {
+        measurements::radar::RadarDetection detection;
+        detection.id = ++det_id;
+        detection.x = 5.0f + static_cast<float>(index) * 0.5f;
+        detection.x_std = 0.25f;
+        detection.y = 5.0f;
+        detection.y_std = 0.25f;
+        detection.range = std::hypot(detection.x, detection.y);
+        detection.azimuth = std::atan2(detection.y, detection.x);
+        scan.detections.push_back(detection);
+    }
+    //second segment
+    for (auto index = 0u; index < 10u; index++) {
+        measurements::radar::RadarDetection detection;
+        detection.id = ++det_id;
+        detection.x = static_cast<float>(index) * 0.5f;
+        detection.x_std = 0.25f;
+        detection.y = -5.0f;
+        detection.y_std = 0.25f;
+        detection.range = std::hypot(detection.x, detection.y);
+        detection.azimuth = std::atan2(detection.y, detection.x);
+        scan.detections.push_back(detection);
+    }
+
+    measurements::radar::VelocityProfile vp;
+    vp.vx = 0.0f;
+    vp.vy = 0.0f;
+
+    measurements::radar::SegmentatorCalibration segmentator_calibration;
+    segmentator_calibration.neighbourhood_threshold = 1.0f;
+    segmentator_calibration.minimum_detection_in_segment = 2u;
+
+    auto segmentator = measurements::radar::Segmentator(segmentator_calibration);
+    segmentator.Run(scan);
+
+    measurements::radar::SegmentsProcessor processor(calibration_);
+    auto [objects, guardrials] = processor.ProcessSegments(scan, vp);
+
+    // Objects
+    EXPECT_TRUE(objects.empty());
+
+    // Guardrails
+    EXPECT_EQ(guardrials.size(), 2u);
+
+    EXPECT_FLOAT_EQ(guardrials.at(0).range.start, 5.0f);
+    EXPECT_FLOAT_EQ(guardrials.at(0).range.end, 9.5f);
+
+    EXPECT_FLOAT_EQ(guardrials.at(1).range.start, 0.0f);
+    EXPECT_FLOAT_EQ(guardrials.at(1).range.end, 4.5f);
 }
