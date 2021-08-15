@@ -19,6 +19,8 @@ namespace measurements::radar
 {
     class Dealiaser;
     class DetectionClassifier;
+    class Segmentator;
+    class SegmentsProcessor;
     class VelocityEstimator;
 
     class RadarProcessor
@@ -33,6 +35,8 @@ namespace measurements::radar
             ProcessorCalibration calibration_;
             std::unique_ptr<Dealiaser> dealiaser_;
             std::unique_ptr<DetectionClassifier> detection_classifier_;
+            std::unique_ptr<Segmentator> segmentator_;
+            std::unique_ptr<SegmentsProcessor> segmentatos_processor_;
             std::unique_ptr<VelocityEstimator> velocity_estimator_;
     };
 }   // namespace measurements::radar

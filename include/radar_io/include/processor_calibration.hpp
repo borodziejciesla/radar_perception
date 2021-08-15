@@ -11,6 +11,8 @@
 #define INCLUDE_RADAR_IO_INCLUDE_PROCESSOR_CALIBRATION_HPP_
 
 #include "dealiaser_calibrations.hpp"
+#include "segmentator_calibration.hpp"
+#include "segment_processor_calibration.hpp"
 #include "velocity_estimator_calibrations.hpp"
 
 namespace measurements::radar
@@ -18,6 +20,8 @@ namespace measurements::radar
     struct ProcessorCalibration
     {
         DealiaserCalibration dealiaser_calibration;
+        SegmentatorCalibration segmentator_calibration;
+        SegmentProcessorCalibration segment_processor_calibration_;
         VelocityEstimatorCalibration velocity_estimator_calibration;
     };
 }   // namespace measurements::radar
