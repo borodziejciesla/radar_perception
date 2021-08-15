@@ -33,7 +33,7 @@ namespace measurements::radar
         private:
             using Segment = std::variant<MovingObject, Guardrail>;
 
-            Segment ProccessSegment(size_t segment_id, const RadarScan & radar_scan, const VelocityProfile & velocity_profile);
+            std::optional<Segment> ProccessSegment(size_t segment_id, const RadarScan & radar_scan, const VelocityProfile & velocity_profile);
             bool IsStaticSegment(auto segment, const VelocityProfile & velocity_profile) const;
             MovingObject ProcessMovingObject(auto segment);
             Guardrail ProcessGuardrail(auto segment);
