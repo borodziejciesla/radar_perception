@@ -6,12 +6,14 @@ add_executable(${TEST_PROJECT_NAME}
     radar_processor_test.cpp
     dealiaser_test.cpp
     segmentator_test.cpp
+    segments_processor_test.cpp
     velocity_estimator_test.cpp
 
     $<TARGET_OBJECTS:radar_perception>
     $<TARGET_OBJECTS:dealiaser>
     $<TARGET_OBJECTS:detection_classifier>
     $<TARGET_OBJECTS:segmentator>
+    $<TARGET_OBJECTS:segment_processor>
     $<TARGET_OBJECTS:velocity_estimator>
 )
 
@@ -23,5 +25,6 @@ target_link_libraries(${TEST_PROJECT_NAME}
     radar_perception
     dealiaser
     segmentator
+    segment_processor
     velocity_estimator
 )

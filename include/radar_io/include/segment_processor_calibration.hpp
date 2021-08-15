@@ -7,14 +7,14 @@
  * this file. If not, please write to: , or visit :
  */
 
-#ifndef COMPONENTS_COMMON_INCLUDE_RANGE_RATE_HPP_
-#define COMPONENTS_COMMON_INCLUDE_RANGE_RATE_HPP_
-
-#include "velocity_profile.hpp"
+#ifndef INCLUDE_RADAR_IO_INCLUDE_SEGMENT_PROCESSOR_CALIBRATION_HPP_
+#define INCLUDE_RADAR_IO_INCLUDE_SEGMENT_PROCESSOR_CALIBRATION_HPP_
 
 namespace measurements::radar
 {
-    float RangeRate2D(const float azimuth, const VelocityProfile & velocity_prifle);
-}   // measurements::radar
+    struct SegmentProcessorCalibration
+    {
+    };
+}   // namespace measurements::radar
 
-#endif  //  COMPONENTS_COMMON_INCLUDE_RANGE_RATE_HPP_
+#endif // INCLUDE_RADAR_IO_INCLUDE_SEGMENT_PROCESSOR_CALIBRATION_HPP_
