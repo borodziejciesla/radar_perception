@@ -9,6 +9,7 @@
 
 #include "segment_processor.hpp"
 #include "covariance.hpp"
+#include "segmentator.hpp"
 
 /*************************** Covariance Test ***************************/
 TEST(CovarianceTest, CreateTest) {
@@ -72,4 +73,36 @@ TEST_F(SegmentsProcessorTests, RunEmptyScanTest) {
     measurements::radar::SegmentsProcessor processor(calibration_);
 
     auto [objects, guardrials] = processor.ProcessSegments(scan, vp);
+}
+
+TEST_F(SegmentsProcessorTests, RunStaticRadarOneSegmentTest) {
+    measurements::radar::RadarScan scan;
+    for (auto index = 0u; index < 10u; index++) {
+        measurements::radar::RadarDetection detection;
+        detection.id = index + 1u;
+        detection.x = 5.0f + static_cast<float>(index) * 0.5f;
+        detection.x_std = 0.25f;
+        detection.y = 5.0f;
+        detection.y_std = 0.25f;
+        detection.range = std::hypot(detection.x, detection.y);
+        detection.azimuth = std::atan2(detection.y, detection.x);
+        scan.detections.push_back(detection);
+    }
+
+    measurements::radar::VelocityProfile vp;
+    vp.vx = 0.0f;
+    vp.vy = 0.0f;
+
+    measurements::radar::SegmentatorCalibration segmentator_calibration;
+    segmentator_calibration.neighbourhood_threshold = 1.0f;
+    segmentator_calibration.minimum_detection_in_segment = 2u;
+
+    auto segmentator = measurements::radar::Segmentator(segmentator_calibration);
+    segmentator.Run(scan);
+
+    measurements::radar::SegmentsProcessor processor(calibration_);
+    auto [objects, guardrials] = processor.ProcessSegments(scan, vp);
+
+    EXPECT_TRUE(objects.empty());
+    EXPECT_EQ(guardrials.size(), 1u);
 }

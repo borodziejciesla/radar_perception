@@ -36,40 +36,50 @@ namespace measurements::radar
         for (auto segment_id = 1u; segment_id < radar_scan.detections.size(); segment_id++)
         {
             auto segment = ProccessSegment(segment_id, radar_scan, velocity_profile);
+            if (!segment.has_value())
+                break;
+
             std::visit([this](auto arg) {
                 using T = std::decay_t<decltype(arg)>;
                 if constexpr (std::is_same_v<T, MovingObject>)
                     moving_objects_.push_back(arg);
                 else
                     guardrails_.push_back(arg);
-            }, segment);
+            }, segment.value());
         }
 
         return std::tuple{moving_objects_, guardrails_};
     }
 
-    SegmentsProcessor::Segment SegmentsProcessor::ProccessSegment(size_t segment_id, const RadarScan & radar_scan, const VelocityProfile & velocity_profile) {
+    std::optional<SegmentsProcessor::Segment> SegmentsProcessor::ProccessSegment(size_t segment_id, const RadarScan & radar_scan, const VelocityProfile & velocity_profile) {
         auto selected_segment = std::ranges::views::filter([=](const RadarDetection & detection) {
             return detection.segment_id == segment_id;
         });
 
         auto segment_detections = radar_scan.detections | selected_segment;
 
+        auto valid_detections_number = std::count_if(segment_detections.begin(), segment_detections.end(), [](const RadarDetection & detection) { return detection.id > 0u; });
+        if (valid_detections_number == 0u)
+            return std::nullopt;
+
         if (IsStaticSegment(segment_detections, velocity_profile))
-            return ProcessMovingObject(segment_detections);
-        else
             return ProcessGuardrail(segment_detections);
+        else
+            return ProcessMovingObject(segment_detections);
     }
 
     bool SegmentsProcessor::IsStaticSegment(auto segment, const VelocityProfile & velocity_profile) const {
-        auto error_sum = [velocity_profile](float error_sumed, const RadarDetection & detection) {
+        auto counter = 0u;
+        auto error_sum = [velocity_profile,&counter](float error_sumed, const RadarDetection & detection) {
             auto abs_error = std::abs(detection.range_rate - (std::cos(detection.azimuth) * velocity_profile.vx + std::sin(detection.azimuth) * velocity_profile.vy));
+            counter++;
             return error_sumed + abs_error;
         };
 
-        std::accumulate(segment.begin(), segment.end(), 0.0f, error_sum);
+        auto summed_error = std::accumulate(segment.begin(), segment.end(), 0.0f, error_sum);
+        auto average_error = summed_error / static_cast<float>(counter);
 
-        return true;
+        return average_error < 1.0f;    // TODO : refactor
     }
 
     MovingObject SegmentsProcessor::ProcessMovingObject(auto segment) {
@@ -132,7 +142,7 @@ namespace measurements::radar
                 void operator()(const RadarDetection & detection) {
                     // Range
                     min_range = std::min(min_range, detection.x);
-                    max_range = std::min(max_range, detection.x);
+                    max_range = std::max(max_range, detection.x);
 
                     // Polynomial
                     a11 += std::pow(detection.x, 6.0f) / std::pow(detection.y_std, 2.0f);
@@ -154,12 +164,14 @@ namespace measurements::radar
 
                 std::tuple<Range, Polynomial> GetGuardrail(void) {
                     // TODO inverse matrix
+                    range.start = min_range;
+                    range.end = max_range;
                     return {range, polynomial};
                 }
 
             private:
                 float min_range = std::numeric_limits<float>::max();
-                float max_range = std::numeric_limits<float>::min();
+                float max_range = std::numeric_limits<float>::lowest();
 
                 float a11 = 0.0f;
                 float a21 = 0.0f;
