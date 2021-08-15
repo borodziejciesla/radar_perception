@@ -201,4 +201,4 @@ namespace measurements::radar
         
         return g;
     }
-}   //  measurements::radar
+}   // namespace measurements::radar
