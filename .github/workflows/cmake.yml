@@ -71,8 +71,6 @@ jobs:
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ./tests/radar_perception_tests  # ctest -C $BUILD_TYPE
 
-jobs:
-
   build:
     name: Build
     runs-on: ubuntu-latest
