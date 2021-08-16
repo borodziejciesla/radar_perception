@@ -70,6 +70,11 @@ jobs:
       # Execute tests defined by the CMake configuration.  
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ./tests/radar_perception_tests  # ctest -C $BUILD_TYPE
+
+    - name: npm install, make test-coverage
+      run: |
+        npm install
+        make test-coverag
       
     - name: Coveralls
       uses: coverallsapp/github-action@master
