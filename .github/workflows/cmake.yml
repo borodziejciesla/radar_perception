@@ -71,11 +71,25 @@ jobs:
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ./tests/radar_perception_tests  # ctest -C $BUILD_TYPE
 
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/checkout@v1
+
+    - name: Use Node.js 10.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10.x
+
     - name: npm install, make test-coverage
       run: |
         npm install
-        make test-coverag
-      
+        make test-coverage
+
     - name: Coveralls
       uses: coverallsapp/github-action@master
       with:
