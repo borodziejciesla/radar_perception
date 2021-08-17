@@ -21,6 +21,20 @@ TEST_F(RadarProcessorTests, ConstructorTest)
     EXPECT_NO_THROW(rp = std::make_unique<measurements::radar::RadarProcessor>(calibrations_));
 }
 
+TEST_F(RadarProcessorTests, RunEmptyScanTest)
+{
+    measurements::radar::RadarScan scan;
+
+    calibrations_.segmentator_calibration.minimum_detection_in_segment = 2u;
+    calibrations_.segmentator_calibration.neighbourhood_threshold = 10.0f;
+    
+    measurements::radar::RadarProcessor rp(calibrations_);
+    auto output = rp.ProcessScan(scan);
+
+    EXPECT_FALSE(output.has_value());
+}
+
+
 TEST_F(RadarProcessorTests, RunTest)
 {
     measurements::radar::RadarScan scan;
@@ -43,7 +57,7 @@ TEST_F(RadarProcessorTests, RunTest)
     calibrations_.segmentator_calibration.neighbourhood_threshold = 10.0f;
     
     measurements::radar::RadarProcessor rp(calibrations_);
-    rp.ProcessScan(scan);
+    auto output = rp.ProcessScan(scan);
 
-    EXPECT_TRUE(true);
+    EXPECT_TRUE(output.has_value());
 }

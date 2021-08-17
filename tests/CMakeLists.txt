@@ -17,6 +17,11 @@ add_executable(${TEST_PROJECT_NAME}
     $<TARGET_OBJECTS:velocity_estimator>
 )
 
+set_target_properties(${TEST_PROJECT_NAME}
+    PROPERTIES
+    COMPILE_FLAGS "-std=c++20 -Wall -Werror"
+)
+
 target_link_libraries(${TEST_PROJECT_NAME}
     gtest_main
     GTest::GTest
