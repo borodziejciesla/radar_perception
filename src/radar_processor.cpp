@@ -28,13 +28,13 @@ namespace measurements::radar {
     RadarProcessor::~RadarProcessor(void) {}
 
     RadarProcessor::ProcessingOutput RadarProcessor::ProcessScan(RadarScan & radar_scan) {
-        dealiaser_->Run(radar_scan);
-        detection_classifier_->Run();
         auto velocity_profile = velocity_estimator_->Run(radar_scan);
         
         if (!velocity_profile.has_value())
             return std::nullopt;
 
+        dealiaser_->Run(radar_scan, velocity_profile.value());
+        detection_classifier_->Run();
         segmentator_->Run(radar_scan);
         return segments_processor_->ProcessSegments(radar_scan, velocity_profile.value());
     }

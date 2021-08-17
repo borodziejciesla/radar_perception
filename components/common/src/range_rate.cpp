@@ -14,7 +14,7 @@
 
 namespace measurements::radar
 {
-    float RangeRate2D(const float azimuth, const VelocityProfile & velocity_prifle) {
-        return (std::cos(azimuth) * velocity_prifle.vx) + (std::sin(azimuth) * velocity_prifle.vy);
+    float RangeRate2D(const float azimuth, const VelocityProfile & velocity_profile) {
+        return (std::cos(azimuth) * velocity_profile.vx) + (std::sin(azimuth) * velocity_profile.vy);
     }
 }   //  namespace measurements::radar
