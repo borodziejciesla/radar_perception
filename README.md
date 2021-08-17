@@ -1,6 +1,11 @@
 # Radar Perception
 
 ## Build requirements
+* CMake 3.16 or higher
+* C++20 - g++10.3 or higher
+* cppcheck
+* pygments
+* cpplint
 
 ## Usage
 
