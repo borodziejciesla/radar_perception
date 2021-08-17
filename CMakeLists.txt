@@ -87,10 +87,11 @@ endif()
 # Code coverage
 if (CMAKE_BUILD_TYPE STREQUAL "Coverage")
     include(CodeCoverage)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COVERAGE_COMPILER_FLAGS}")
-    message(STATUS "Appending code coverage compiler flags: ${COVERAGE_COMPILER_FLAGS}")
+    message(STATUS "================= ${PROJECT_SOURCE_DIR}/tests/")
+    
     set(COVERAGE_EXCLUDES
-		'tests/*'
+        '/usr/*'
+        '${PROJECT_SOURCE_DIR}/tests/*'
 		'${CMAKE_BINARY_DIR}/googletest-src/googletest/include/gtest/*'
 		'${CMAKE_BINARY_DIR}/googletest-src/googletest/src/*'
 		'${CMAKE_BINARY_DIR}/googletest-src/googlemock/include/gmock/*'
