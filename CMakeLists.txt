@@ -90,7 +90,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Coverage")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COVERAGE_COMPILER_FLAGS}")
     message(STATUS "Appending code coverage compiler flags: ${COVERAGE_COMPILER_FLAGS}")
     set(COVERAGE_EXCLUDES
-		'${PROJECT_SOURCE_DIR}/tests/*'
+		'tests/*'
 		'${CMAKE_BINARY_DIR}/googletest-src/googletest/include/gtest/*'
 		'${CMAKE_BINARY_DIR}/googletest-src/googletest/src/*'
 		'${CMAKE_BINARY_DIR}/googletest-src/googlemock/include/gmock/*'

@@ -6,10 +6,51 @@
 #include <cmath>
 #include <memory>
 #include <numbers>
+#include <stdexcept>
 
 #include "segmentator_calibration.hpp"
 #include "segmentator.hpp"
+#include "distance_matrix.hpp"
 
+/****************************** Distance Matrix *******************************/
+class DistanceMatrixTests : public ::testing::Test
+{
+    protected:
+        void SetUp(void) override {
+        }
+
+        void TearDown(void) override {
+        }
+};
+
+TEST_F(DistanceMatrixTests, ConstructorTest) {
+    EXPECT_NO_THROW(auto distances = std::unique_ptr<measurements::radar::DistanceMatrix>());
+}
+
+TEST_F(DistanceMatrixTests, SetSizeAndGetDataCorrectIndicesTest) {
+    auto distances = measurements::radar::DistanceMatrix();
+
+    constexpr size_t size = 5u;
+    distances.SetSize(size);
+
+    for (auto r = 0u; r < size; r++) {
+        for (auto c = 0u; c <= r; c++) {
+            EXPECT_FLOAT_EQ(distances(r, c), 0.0f);
+            EXPECT_FLOAT_EQ(distances(r, c), distances(c, r));
+        }
+    }
+}
+
+TEST_F(DistanceMatrixTests, SetSizeAndGetDataIncorrectIndicesTest) {
+    auto distances = measurements::radar::DistanceMatrix();
+
+    constexpr size_t size = 5u;
+    distances.SetSize(size);
+
+    EXPECT_THROW(distances(0, 5), std::invalid_argument);
+}
+
+/******************************** Segmentator ********************************/
 class SegmentatorTests : public ::testing::Test
 {
     protected:
