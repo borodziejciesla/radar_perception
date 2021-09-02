@@ -19,15 +19,19 @@ cache: # see https://docs.travis-ci.com/user/caching/
   - $HOME/.cache
 
 #before_install:
-  
-
 install:
 # (fake) install dependencies (usually involves wget, configure, make, ...)
 # install into cache folder (build binaries+headers only, no sources and do NOT build there)
   - mkdir -p $HOME/.cache
   - touch $HOME/.cache/mydependency.so
+  - sudo apt-get update
+  - sudo apt install build-essential
+  - sudo apt-get install gcc-10 g++-10
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 --slave /usr/bin/g++ g++ /usr/bin/g++-10 --slave /usr/bin/gcov gcov /usr/bin/gcov-10
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9
 
 script:
+  - cd /home/travis/build/borodziejciesla/radar_perception
   - mkdir build
   - cmake -S . -B build -DCMAKE_BUILD_TYPE=Coverage
   - cmake --build build
