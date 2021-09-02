@@ -2,7 +2,7 @@
 
 [![CMake](https://github.com/borodziejciesla/radar_perception/actions/workflows/cmake.yml/badge.svg)](https://github.com/borodziejciesla/radar_perception/actions/workflows/cmake.yml)
 [![Build Status](https://app.travis-ci.com/borodziejciesla/radar_perception.svg?branch=main)](https://app.travis-ci.com/borodziejciesla/radar_perception)
-
+[![codecov](https://codecov.io/gh/borodziejciesla/radar_perception/branch/main/graph/badge.svg?token=OYQ0DULV68)](https://codecov.io/gh/borodziejciesla/radar_perception)
 
 ## Build requirements
 Development and testing was done with following toolchain:
