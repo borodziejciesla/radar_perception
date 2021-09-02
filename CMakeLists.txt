@@ -1,15 +1,14 @@
-cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 
 set(PROJECT_NAME radar_perception)
 set(TEST_PROJECT_NAME radar_perception_tests)
+
 project(${PROJECT_NAME})
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-set(CMAKE_CXX_COMPILER /usr/bin/g++-10 CACHE PATH "")
 
 set(DEFAULT_BUILD_TYPE "Debug")
 
@@ -21,6 +20,10 @@ if ( MSVC )
 endif()
 
 set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE ON)
+
+option(BUILD_TESTS "Build tests" ON)
+option(MAKE_CPPCHECK "Make static code analysis" OFF)
+option(MAKE_CPPLINT "Make code style analysis" OFF)
 
 ########### Add sources and includes ###########
 include(GNUInstallDirs)
@@ -60,47 +63,26 @@ add_subdirectory(components)
 include(cppcheck)
 include(cpplint)
 
-################ Unit Tests ###################
+########### CodeCoverage ##############
 if(UNIX)
-    # Testing
+    if (CMAKE_BUILD_TYPE STREQUAL "Coverage")
+        include(CodeCoverage)
+
+        SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
+        
+        setup_target_for_coverage(
+            coverage
+            ${TEST_PROJECT_NAME}
+            ${PROJECT_NAME}_coverage_report
+        ) 
+    endif() #CMAKE_BUILD_TYPE STREQUAL "Coverage"
+endif() # UNIX
+
+################ Unit Tests ###################
+if(BUILD_TESTS)    
+    project(${TEST_PROJECT_NAME})
+
+    add_subdirectory(tests)    
     enable_testing()
-    find_package(GTest REQUIRED)
-    include_directories(${GTEST_INCLUDE_DIR})
-    
-    add_subdirectory(tests)
-else()
-    include(FetchContent)
-    FetchContent_Declare(
-        googletest
-        GIT_REPOSITORY https://github.com/google/googletest.git
-        GIT_TAG        703bd9caab50b139428cea1aaff9974ebee5742e # release-1.10.0
-    )
-
-    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-    FetchContent_MakeAvailable(googletest)
-
-    enable_testing()
-    include(GoogleTest)
-    add_subdirectory(tests)
-endif()
-
-# Code coverage
-if (CMAKE_BUILD_TYPE STREQUAL "Coverage")
-    include(CodeCoverage)
-    message(STATUS "================= ${PROJECT_SOURCE_DIR}/tests/")
-    
-    set(COVERAGE_EXCLUDES
-        '/usr/*'
-        '${PROJECT_SOURCE_DIR}/tests/*'
-		'${CMAKE_BINARY_DIR}/googletest-src/googletest/include/gtest/*'
-		'${CMAKE_BINARY_DIR}/googletest-src/googletest/src/*'
-		'${CMAKE_BINARY_DIR}/googletest-src/googlemock/include/gmock/*'
-		'${CMAKE_BINARY_DIR}/googletest-src/googlemock/src/*'
-    )
-    setup_target_for_coverage(coverage ${TEST_PROJECT_NAME} ${PROJECT_NAME})
-
-	set_target_properties(${PROJECT_NAME}
-        PROPERTIES
-        COMPILE_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage"
-    )
-endif() #CMAKE_BUILD_TYPE STREQUAL "Coverage"
+    add_test(${TEST_PROJECT_NAME} ${TEST_PROJECT_NAME})    
+endif() #   BUILD_TESTS
