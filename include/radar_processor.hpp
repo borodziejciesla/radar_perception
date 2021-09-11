@@ -11,9 +11,12 @@
 #define INCLUDE_RADAR_PROCESSOR_HPP_
 
 #include <memory>
+#include <optional>
 
 #include "processor_calibration.hpp"
 #include "radar_scan.hpp"
+#include "moving_object.hpp"
+#include "guardrail.hpp"
 
 namespace measurements::radar
 {
@@ -29,14 +32,15 @@ namespace measurements::radar
             explicit RadarProcessor(const ProcessorCalibration & calibration);
             ~RadarProcessor(void);
 
-            void ProcessScan(RadarScan & radar_scan);
+            using ProcessingOutput = std::optional<std::tuple<MovingObjects, Guardrails>>;
+            ProcessingOutput ProcessScan(RadarScan & radar_scan);
 
         private:
             ProcessorCalibration calibration_;
             std::unique_ptr<Dealiaser> dealiaser_;
             std::unique_ptr<DetectionClassifier> detection_classifier_;
             std::unique_ptr<Segmentator> segmentator_;
-            std::unique_ptr<SegmentsProcessor> segmentatos_processor_;
+            std::unique_ptr<SegmentsProcessor> segments_processor_;
             std::unique_ptr<VelocityEstimator> velocity_estimator_;
     };
 }   // namespace measurements::radar

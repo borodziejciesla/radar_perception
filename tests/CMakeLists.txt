@@ -1,7 +1,20 @@
-set(TEST_PROJECT_NAME radar_perception_tests)
+################################
+# GTest
+################################
+project(googletest-git NONE)
 
-project(${TEST_PROJECT_NAME} VERSION 0.1)
+include(FetchContent)
+FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG        703bd9caab50b139428cea1aaff9974ebee5742e # release-1.10.0
+)
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
 
+################################
+# Tests
+################################
 add_executable(${TEST_PROJECT_NAME}
     radar_processor_test.cpp
     dealiaser_test.cpp
@@ -18,10 +31,9 @@ add_executable(${TEST_PROJECT_NAME}
 )
 
 target_link_libraries(${TEST_PROJECT_NAME}
+    gtest 
     gtest_main
-    GTest::GTest
-    GTest::Main
-    
+        
     radar_perception
     dealiaser
     segmentator

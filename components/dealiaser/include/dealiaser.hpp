@@ -24,11 +24,10 @@ namespace measurements::radar
             explicit Dealiaser(const DealiaserCalibration & dealiaser_calibrations);
             ~Dealiaser(void);
 
-            void Run(RadarScan & radar_scan);
+            void Run(RadarScan & radar_scan, const VelocityProfile & velocity_profile);
 
         private:
             const DealiaserCalibration calibrations_;
-            VelocityProfile velocity_profile_;
     };
 }   // namespace measurements::radar
 
