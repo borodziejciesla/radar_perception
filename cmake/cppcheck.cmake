@@ -44,6 +44,7 @@ if(UNIX AND MAKE_CPPCHECK)
                 --inline-suppr
                 --force
                 #--output-file=${CMAKE_SOURCE_DIR}/cppcheck_output.txt
+                --suppressions-list=${CMAKE_SOURCE_DIR}/cmake/suppressions.txt
                 --xml
                 --xml-version=2
                 2> ${CMAKE_CURRENT_BINARY_DIR}/cppcheck_output.xml
