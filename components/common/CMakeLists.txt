@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 add_library(common
     src/range_rate.cpp
+    src/math.cpp
 )
 
 target_include_directories(common

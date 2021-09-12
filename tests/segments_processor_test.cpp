@@ -205,7 +205,10 @@ TEST_F(SegmentsProcessorTests, RunStaticRadarTwoStaticOneMovingSegmentTest) {
         scan.detections.push_back(detection);
     }
     // Third moving segment
-    measurements::radar::VelocityProfile object_vp = {15.0f, 1.0f};
+    measurements::radar::VelocityProfile object_vp;
+    object_vp.value.at(0u) = 15.0f;
+    object_vp.value.at(1u) = 10.0f;
+
     std::vector<float> y(3);
     std::iota(y.begin(), y.end(), -1);
     for (const auto & element : y)
