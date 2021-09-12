@@ -13,7 +13,7 @@
 #include <vector>
 
 #include "radar_scan.hpp"
-#include "velocity_profile.hpp"
+#include "range_rate.hpp"
 #include "dealiaser_calibrations.hpp"
 
 namespace measurements::radar

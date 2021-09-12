@@ -18,7 +18,7 @@
 #include "guardrail.hpp"
 #include "moving_object.hpp"
 #include "segment_processor_calibration.hpp"
-#include "velocity_profile.hpp"
+#include "range_rate.hpp"
 
 namespace measurements::radar
 {

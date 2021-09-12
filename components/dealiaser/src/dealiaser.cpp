@@ -26,18 +26,23 @@ namespace measurements::radar
     void Dealiaser::Run(RadarScan & radar_scan, const VelocityProfile & velocity_profile)
     {
         auto dealias = [=,this](RadarDetection & detection) {
-            auto rr_model = RangeRate2D(detection.azimuth, velocity_profile);
+            Azimuth azimuth_with_covariance;
+            azimuth_with_covariance.value.at(0u) = detection.azimuth;
+            azimuth_with_covariance.covariance.covariance_diagonal.at(0u) = detection.azimuth;
+
+            auto rr_model = RangeRate2D(azimuth_with_covariance, velocity_profile);
+            auto rr_value = rr_model.value.at(0u);
             
-            if (std::abs(rr_model - detection.range_rate) < calibrations_.dealiaser_threshold)
+            if (std::abs(rr_value - detection.range_rate) < calibrations_.dealiaser_threshold)
             {
                 detection.dealiasing_status = DealiasingStatus::StaticVelocityProfileDealiased;
             }
-            else if (std::abs((rr_model - radar_scan.aliasing_period) - detection.range_rate) < calibrations_.dealiaser_threshold)
+            else if (std::abs((rr_value - radar_scan.aliasing_period) - detection.range_rate) < calibrations_.dealiaser_threshold)
             {
                 detection.range_rate += radar_scan.aliasing_period;
                 detection.dealiasing_status = DealiasingStatus::StaticVelocityProfileDealiased;
             }
-            else if (std::abs((rr_model + radar_scan.aliasing_period) - detection.range_rate) < calibrations_.dealiaser_threshold)
+            else if (std::abs((rr_value + radar_scan.aliasing_period) - detection.range_rate) < calibrations_.dealiaser_threshold)
             {
                 detection.range_rate -= radar_scan.aliasing_period;
                 detection.dealiasing_status = DealiasingStatus::StaticVelocityProfileDealiased;

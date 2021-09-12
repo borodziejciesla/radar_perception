@@ -7,16 +7,19 @@
  * this file. If not, please write to: , or visit :
  */
 
-#ifndef COMPONENTS_COMMON_INCLUDE_VELOCITY_PROFILE_HPP_
-#define COMPONENTS_COMMON_INCLUDE_VELOCITY_PROFILE_HPP_
+#ifndef COMPONENTS_COMMON_INCLUDE_VALUE_WITH_COVARIANCE_HPP_
+#define COMPONENTS_COMMON_INCLUDE_VALUE_WITH_COVARIANCE_HPP_
+
+#include "covariance.hpp"
 
 namespace measurements::radar
 {
-    struct VelocityProfile
+    template <size_t size>
+    struct ValueWithCovariance
     {
-        float vx = 0.0f;
-        float vy = 0.0f;
+        std::array<float, size> value;
+        Covariance<size> covariance;
     };
 }   // measurements::radar
 
-#endif  //  COMPONENTS_COMMON_INCLUDE_VELOCITY_PROFILE_HPP_
+#endif  //  COMPONENTS_COMMON_INCLUDE_VALUE_WITH_COVARIANCE_HPP_
