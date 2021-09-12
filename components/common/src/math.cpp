@@ -7,16 +7,17 @@
  * this file. If not, please write to: , or visit :
  */
 
-#ifndef COMPONENTS_COMMON_INCLUDE_VELOCITY_PROFILE_HPP_
-#define COMPONENTS_COMMON_INCLUDE_VELOCITY_PROFILE_HPP_
+#include "math.hpp"
+
+#include <cmath>
 
 namespace measurements::radar
 {
-    struct VelocityProfile
-    {
-        float vx = 0.0f;
-        float vy = 0.0f;
-    };
-}   // measurements::radar
+    float InverseChiSquareDistribution(const float x, const float df) {
+        auto num = std::pow(2.0f, -0.5f * df);
+        auto den = std::tgamma(0.5f * df);
+        auto mul = std::pow(x, -0.5 * df - 1.0f) * std::exp(-1.0 / (2.0f * x));
 
-#endif  //  COMPONENTS_COMMON_INCLUDE_VELOCITY_PROFILE_HPP_
+        return num * mul / den;
+    }
+}   //  namespace measurements::radar

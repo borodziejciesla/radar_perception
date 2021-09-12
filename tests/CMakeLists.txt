@@ -18,6 +18,7 @@ FetchContent_MakeAvailable(googletest)
 add_executable(${TEST_PROJECT_NAME}
     radar_processor_test.cpp
     dealiaser_test.cpp
+    detection_classifier_test.cpp
     segmentator_test.cpp
     segments_processor_test.cpp
     velocity_estimator_test.cpp
@@ -36,6 +37,7 @@ target_link_libraries(${TEST_PROJECT_NAME}
         
     radar_perception
     dealiaser
+    detection_classifier
     segmentator
     segment_processor
     velocity_estimator

@@ -100,8 +100,8 @@ TEST_F(SegmentsProcessorTests, RunStaticRadarOneStaticSegmentTest) {
     }
 
     measurements::radar::VelocityProfile vp;
-    vp.vx = 0.0f;
-    vp.vy = 0.0f;
+    vp.value.at(0u) = 0.0f;
+    vp.value.at(1u) = 0.0f;
 
     measurements::radar::SegmentatorCalibration segmentator_calibration;
     segmentator_calibration.neighbourhood_threshold = 1.0f;
@@ -151,8 +151,8 @@ TEST_F(SegmentsProcessorTests, RunStaticRadarTwoStaticSegmentTest) {
     }
 
     measurements::radar::VelocityProfile vp;
-    vp.vx = 0.0f;
-    vp.vy = 0.0f;
+    vp.value.at(0u) = 0.0f;
+    vp.value.at(1u) = 0.0f;
 
     measurements::radar::SegmentatorCalibration segmentator_calibration;
     segmentator_calibration.neighbourhood_threshold = 1.0f;
@@ -205,7 +205,10 @@ TEST_F(SegmentsProcessorTests, RunStaticRadarTwoStaticOneMovingSegmentTest) {
         scan.detections.push_back(detection);
     }
     // Third moving segment
-    measurements::radar::VelocityProfile object_vp = {15.0f, 1.0f};
+    measurements::radar::VelocityProfile object_vp;
+    object_vp.value.at(0u) = 15.0f;
+    object_vp.value.at(1u) = 10.0f;
+
     std::vector<float> y(3);
     std::iota(y.begin(), y.end(), -1);
     for (const auto & element : y)
@@ -218,14 +221,14 @@ TEST_F(SegmentsProcessorTests, RunStaticRadarTwoStaticOneMovingSegmentTest) {
         detection.y_std = 0.25f;
         detection.range = std::hypot(detection.x, detection.y);
         detection.azimuth = std::atan2(detection.y, detection.x);
-        detection.range_rate = -(std::cos(detection.azimuth) * object_vp.vx + std::sin(detection.azimuth) * object_vp.vy);
+        detection.range_rate = -(std::cos(detection.azimuth) * object_vp.value.at(0u) + std::sin(detection.azimuth) * object_vp.value.at(1u));
         detection.range_rate_std = 0.01f;
         scan.detections.push_back(detection);
     }
 
     measurements::radar::VelocityProfile vp;
-    vp.vx = 0.0f;
-    vp.vy = 0.0f;
+    vp.value.at(0u) = 0.0f;
+    vp.value.at(1u) = 0.0f;
 
     measurements::radar::SegmentatorCalibration segmentator_calibration;
     segmentator_calibration.neighbourhood_threshold = 2.0f;
@@ -240,8 +243,8 @@ TEST_F(SegmentsProcessorTests, RunStaticRadarTwoStaticOneMovingSegmentTest) {
     // Objects
     EXPECT_EQ(objects.size(), 1u);
 
-    EXPECT_NEAR(objects.at(0).object_velocity.vx, object_vp.vx, 1.0e-3f);
-    EXPECT_NEAR(objects.at(0).object_velocity.vy, object_vp.vy, 1.0e-3f);
+    EXPECT_NEAR(objects.at(0).object_velocity.vx, object_vp.value.at(0u), 1.0e-3f);
+    EXPECT_NEAR(objects.at(0).object_velocity.vy, object_vp.value.at(1u), 1.0e-3f);
     EXPECT_TRUE(CheckIfCovarianceHasPositiveDiagonal(objects.at(0).object_velocity.covariance));
 
     // Guardrails

@@ -7,4 +7,6 @@ add_library(detection_classifier
 target_include_directories(detection_classifier
     PUBLIC
         include
+        $<TARGET_PROPERTY:common,INTERFACE_INCLUDE_DIRECTORIES>
+        $<TARGET_PROPERTY:radar_io,INTERFACE_INCLUDE_DIRECTORIES>
 )

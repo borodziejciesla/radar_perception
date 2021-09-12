@@ -10,6 +10,9 @@
 #ifndef COMPONENTS_DETECTION_CLASSIFIER_INCLUDE_DETECTION_CLASSIFIER_HPP_
 #define COMPONENTS_DETECTION_CLASSIFIER_INCLUDE_DETECTION_CLASSIFIER_HPP_
 
+#include "radar_scan.hpp"
+#include "range_rate.hpp"
+
 namespace measurements::radar
 {
     class DetectionClassifier
@@ -18,7 +21,7 @@ namespace measurements::radar
             DetectionClassifier(void);
             ~DetectionClassifier(void);
 
-            void Run(void);
+            void Run(RadarScan & radar_scan, const VelocityProfile & velocity_profile);
 
         private:
     };

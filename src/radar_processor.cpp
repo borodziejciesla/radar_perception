@@ -34,7 +34,7 @@ namespace measurements::radar {
             return std::nullopt;
 
         dealiaser_->Run(radar_scan, velocity_profile.value());
-        detection_classifier_->Run();
+        detection_classifier_->Run(radar_scan, velocity_profile.value());
         segmentator_->Run(radar_scan);
         return segments_processor_->ProcessSegments(radar_scan, velocity_profile.value());
     }

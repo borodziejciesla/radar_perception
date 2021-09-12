@@ -10,11 +10,15 @@
 #ifndef COMPONENTS_COMMON_INCLUDE_RANGE_RATE_HPP_
 #define COMPONENTS_COMMON_INCLUDE_RANGE_RATE_HPP_
 
-#include "velocity_profile.hpp"
+#include "value_with_covariance.hpp"
 
 namespace measurements::radar
 {
-    float RangeRate2D(const float azimuth, const VelocityProfile & velocity_prifle);
+    using VelocityProfile = ValueWithCovariance<2u>;
+    using Azimuth = ValueWithCovariance<1u>;
+    using RangeRate = ValueWithCovariance<1u>;
+
+    const RangeRate & RangeRate2D(const Azimuth & azimuth, const VelocityProfile & velocity_prifle);
 }   // measurements::radar
 
 #endif  //  COMPONENTS_COMMON_INCLUDE_RANGE_RATE_HPP_

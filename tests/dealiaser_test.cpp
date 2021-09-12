@@ -38,8 +38,8 @@ TEST_F(DealiaserTests, DealiasedTest)
     measurements::radar::RadarScan scan;
     scan.aliasing_period = 50.0f;
     measurements::radar::VelocityProfile vp;
-    vp.vx = 10.0f;
-    vp.vy = 0.0f;
+    vp.value.at(0u) = 10.0f;
+    vp.value.at(1u) = 0.0f;
 
     constexpr size_t detections_number = 64u;
 
@@ -54,7 +54,7 @@ TEST_F(DealiaserTests, DealiasedTest)
             static size_t id = 1;
             measurements::radar::RadarDetection detection;
             detection.id = id++;
-            detection.range_rate = (vp.vx * std::cos(azimuth) + vp.vy * std::sin(azimuth));
+            detection.range_rate = (vp.value.at(0u) * std::cos(azimuth) + vp.value.at(1u) * std::sin(azimuth));
             detection.range_rate_std = 0.1f;
             detection.azimuth = azimuth;
             detection.range = 10.0f;
@@ -73,6 +73,6 @@ TEST_F(DealiaserTests, DealiasedTest)
     measurements::radar::Dealiaser dealiaser(calibrations_);
     dealiaser.Run(scan, vp);
 
-    EXPECT_FLOAT_EQ(scan.detections.at(0).range_rate, (vp.vx * std::cos(scan.detections.at(0).azimuth) + vp.vy * std::sin(scan.detections.at(0).azimuth)));
-    EXPECT_FLOAT_EQ(scan.detections.at(1).range_rate, (vp.vx * std::cos(scan.detections.at(1).azimuth) + vp.vy * std::sin(scan.detections.at(1).azimuth)));
+    EXPECT_FLOAT_EQ(scan.detections.at(0).range_rate, (vp.value.at(0u) * std::cos(scan.detections.at(0).azimuth) + vp.value.at(1u) * std::sin(scan.detections.at(0).azimuth)));
+    EXPECT_FLOAT_EQ(scan.detections.at(1).range_rate, (vp.value.at(0u) * std::cos(scan.detections.at(1).azimuth) + vp.value.at(1u) * std::sin(scan.detections.at(1).azimuth)));
 }
