@@ -75,7 +75,10 @@ namespace measurements::radar
     bool SegmentsProcessor::IsStaticSegment(auto segment, const VelocityProfile & velocity_profile) const {
         auto counter = 0u;
         auto error_sum = [velocity_profile,&counter](float error_sumed, const RadarDetection & detection) {
-            auto abs_error = std::abs(detection.range_rate - (std::cos(detection.azimuth) * velocity_profile.vx + std::sin(detection.azimuth) * velocity_profile.vy));
+            auto vx = velocity_profile.value.at(0);
+            auto vy = velocity_profile.value.at(0);
+
+            auto abs_error = std::abs(detection.range_rate - (std::cos(detection.azimuth) * vx + std::sin(detection.azimuth) * vy));
             counter++;
             return error_sumed + abs_error;
         };

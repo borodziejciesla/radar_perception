@@ -14,6 +14,8 @@
 #include <numeric>
 #include <ranges>
 
+#include <Eigen/Dense>
+
 #include "range_rate.hpp"
 
 namespace measurements::radar
@@ -79,21 +81,46 @@ namespace measurements::radar
         auto c2 = std::cos(second.azimuth);
         auto r2 = second.range_rate;
 
+        /* Value */
         auto determinant = c1 * s2 - s1 * c2;
-        auto vx = (s2 * r1 - s1 * r2) / determinant;
-        auto vy = (-c2 * r1 + c1 * r2) / determinant;
+        vp.value.at(0u) = (s2 * r1 - s1 * r2) / determinant;
+        vp.value.at(1u) = (-c2 * r1 + c1 * r2) / determinant;
 
-        vp.vx = vx;
-        vp.vy = vy;
-        
+        /* Covariance */
+        Eigen::MatrixXf input_covariance = Eigen::MatrixXf::Zero(4, 4);
+        input_covariance(0, 0) = first.azimuth_std;
+        input_covariance(1, 1) = first.range_rate_std;
+        input_covariance(2, 2) = second.azimuth_std;
+        input_covariance(3, 3) = second.range_rate_std;
+
+        Eigen::MatrixXf jacobian = Eigen::MatrixXf::Zero(2, 4);
+        jacobian(0, 0) = ((s1 * s2 + c1 * c2) * (r1 * s2 - r2 * s1)) / std::pow(c1 * s2 - c2 * s1, 2.0f) - (r2 * c1) / (c1 * s2 - c2 * s1);
+        jacobian(0, 1) = s2 / (c1 * s2 - c2 * s1);
+        jacobian(0, 2) = (r1 * c2) / (c1 * s2 - c2 * s1) - ((s1 * s2 + c1 * c2) * (r1 * s2 - r2 * s1)) / std::pow(c1 * s2 - c2 * s1, 2.0f);
+        jacobian(0, 3) = -s1/(c1*s2 - c2*s1);
+        jacobian(1, 0) = -(r2 * s1) / (c1 * s2 - c2 * s1) - ((s1 * s2 + c1 * c2) * (r1 * c2 - r2 * c1)) / std::pow(c1 * s2 - c2 * s1, 2.0f);
+        jacobian(1, 1) = -c2 / (c1 * s2 - c2 * s1);
+        jacobian(1, 2) = (r1 * s2) / (c1 * s2 - c2 * s1) + ((s1 * s2 + c1 * c2) * (r1 * c2 - r2 * c1)) / std::pow(c1 * s2 - c2 * s1, 2.0f);
+        jacobian(1, 3) = c1 / (c1 * s2 - c2 * s1);
+
+        auto covariance = jacobian * input_covariance * jacobian.transpose();
+
+        vp.covariance.covariance_diagonal.at(0) = covariance(0, 0);
+        vp.covariance.covariance_diagonal.at(1) = covariance(1, 1);
+        vp.covariance.covariance_lower_triangle.at(0u) = covariance(0, 1);
+
         return vp;
     }
 
     std::tuple<uint, float> VelocityEstimator::CalculateIniliersAndFitQuality(const RadarScan & radar_scan, const VelocityProfile & velocity_profile) {
         auto iniliers_number = 0u;
         auto is_inlier = std::ranges::views::filter([=, &iniliers_number](const RadarDetection & detection) {
-            auto model_range_rate = RangeRate2D(detection.azimuth, velocity_profile);
-            auto distance_from_model = std::abs(detection.range_rate - model_range_rate);
+            Azimuth azimuth_with_covariance;
+            azimuth_with_covariance.value.at(0u) = detection.azimuth;
+            azimuth_with_covariance.covariance.covariance_diagonal.at(0u) = detection.azimuth;
+
+            auto model_range_rate = RangeRate2D(azimuth_with_covariance, velocity_profile);
+            auto distance_from_model = std::abs(detection.range_rate - model_range_rate.value.at(0u));
             if (distance_from_model < 0.5f) {
                 iniliers_number++;
                 return true;
@@ -102,8 +129,12 @@ namespace measurements::radar
             }
         });
         auto distance_to_profile = std::ranges::views::transform([=](const RadarDetection & detection) {
-            auto model_range_rate = RangeRate2D(detection.azimuth, velocity_profile);
-            auto distance_from_model = std::abs(detection.range_rate - model_range_rate);
+            Azimuth azimuth_with_covariance;
+            azimuth_with_covariance.value.at(0u) = detection.azimuth;
+            azimuth_with_covariance.covariance.covariance_diagonal.at(0u) = detection.azimuth;
+
+            auto model_range_rate = RangeRate2D(azimuth_with_covariance, velocity_profile);
+            auto distance_from_model = std::abs(detection.range_rate - model_range_rate.value.at(0u));
             return std::pow(distance_from_model, 2.0f);
         });
 

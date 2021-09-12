@@ -19,7 +19,7 @@
 
 #include "velocity_estimator_calibrations.hpp"
 
-#include "velocity_profile.hpp"
+#include "range_rate.hpp"
 
 namespace measurements::radar
 {
