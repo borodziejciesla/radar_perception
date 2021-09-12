@@ -84,8 +84,8 @@ TEST_F(VelocityEstimatorTests, RunTest)
     auto vp = velocity_estimator.Run(scan);
 
     EXPECT_TRUE(vp.has_value());
-    EXPECT_NEAR(vp->vx, vx, 1e-4);
-    EXPECT_NEAR(vp->vy, vy, 1e-4);
+    EXPECT_NEAR(vp->value.at(0u), vx, 1e-4);
+    EXPECT_NEAR(vp->value.at(1u), vy, 1e-4);
 }
 
 TEST_F(VelocityEstimatorTests, RunWithOneOutlierTest)
@@ -115,6 +115,6 @@ TEST_F(VelocityEstimatorTests, RunWithOneOutlierTest)
     auto vp = velocity_estimator.Run(scan);
 
     EXPECT_TRUE(vp.has_value());
-    EXPECT_NEAR(vp->vx, vx, 1e-4);
-    EXPECT_NEAR(vp->vy, vy, 1e-4);
+    EXPECT_NEAR(vp->value.at(0u), vx, 1e-4);
+    EXPECT_NEAR(vp->value.at(1u), vy, 1e-4);
 }
