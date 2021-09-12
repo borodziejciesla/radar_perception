@@ -131,7 +131,7 @@ namespace measurements::radar
         auto distance_to_profile = std::ranges::views::transform([=](const RadarDetection & detection) {
             Azimuth azimuth_with_covariance;
             azimuth_with_covariance.value.at(0u) = detection.azimuth;
-            azimuth_with_covariance.covariance.covariance_diagonal.at(0u) = detection.azimuth;
+            azimuth_with_covariance.covariance.covariance_diagonal.at(0u) = std::pow(detection.azimuth_std, 2.0f);
 
             auto model_range_rate = RangeRate2D(azimuth_with_covariance, velocity_profile);
             auto distance_from_model = std::abs(detection.range_rate - model_range_rate.value.at(0u));

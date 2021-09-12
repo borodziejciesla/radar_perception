@@ -28,7 +28,7 @@ namespace measurements::radar
         auto dealias = [=,this](RadarDetection & detection) {
             Azimuth azimuth_with_covariance;
             azimuth_with_covariance.value.at(0u) = detection.azimuth;
-            azimuth_with_covariance.covariance.covariance_diagonal.at(0u) = detection.azimuth;
+            azimuth_with_covariance.covariance.covariance_diagonal.at(0u) = std::pow(detection.azimuth_std, 2.0f);
 
             auto rr_model = RangeRate2D(azimuth_with_covariance, velocity_profile);
             auto rr_value = rr_model.value.at(0u);
