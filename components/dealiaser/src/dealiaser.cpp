@@ -17,11 +17,10 @@
 namespace measurements::radar
 {
     Dealiaser::Dealiaser(const DealiaserCalibration & dealiaser_calibrations)
-        : calibrations_{dealiaser_calibrations}
-    {}
+        : calibrations_{dealiaser_calibrations} {
+    }
 
-    Dealiaser::~Dealiaser(void)
-    {}
+    Dealiaser::~Dealiaser(void) = default;
 
     void Dealiaser::Run(RadarScan & radar_scan, const VelocityProfile & velocity_profile)
     {

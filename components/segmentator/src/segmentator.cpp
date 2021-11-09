@@ -19,8 +19,7 @@ namespace measurements::radar
         : calibration_{calibration} {
     }
 
-    Segmentator::~Segmentator(void) {
-    }
+    Segmentator::~Segmentator(void) = default;
 
     void Segmentator::Run(RadarScan & radar_scan) {
         CalculateDistances(radar_scan);

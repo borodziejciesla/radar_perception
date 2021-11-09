@@ -25,8 +25,7 @@ namespace measurements::radar
         : calibration_{calibration} {
     }
 
-    SegmentsProcessor::~SegmentsProcessor(void) {
-    }
+    SegmentsProcessor::~SegmentsProcessor(void) = default;
 
     std::tuple<MovingObjects, Guardrails> SegmentsProcessor::ProcessSegments(const RadarScan & radar_scan, const VelocityProfile & velocity_profile) {
         moving_objects_.clear();

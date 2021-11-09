@@ -24,8 +24,7 @@ namespace measurements::radar
         : calibration_{calibration} {
     }
 
-    VelocityEstimator::~VelocityEstimator(void) {
-    }
+    VelocityEstimator::~VelocityEstimator(void) = default;
 
     std::optional<VelocityProfile> VelocityEstimator::Run(const RadarScan & radar_scan) {
         best_iniliers_number_ = 0u;

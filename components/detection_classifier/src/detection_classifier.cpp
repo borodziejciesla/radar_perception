@@ -18,11 +18,9 @@
 
 namespace measurements::radar
 {
-    DetectionClassifier::DetectionClassifier(void) {
-    }
+    DetectionClassifier::DetectionClassifier(void) = default;
 
-    DetectionClassifier::~DetectionClassifier(void) {
-    }
+    DetectionClassifier::~DetectionClassifier(void) = default;
 
     void DetectionClassifier::Run(RadarScan & radar_scan, const VelocityProfile & velocity_profile) {
         auto is_valid_detection = std::ranges::views::filter([=](const RadarDetection & detection) {
