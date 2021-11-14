@@ -3,6 +3,7 @@
 add_executable(${EXAMPLE_PROJECT_NAME}
   example.cpp
   src/csv_reader.cpp
+  src/sensors_data_reader.cpp
 
   #$<TARGET_OBJECTS:radar_perception>
 )

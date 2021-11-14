@@ -3,16 +3,15 @@
 
 //#include "radar_processor.hpp"
 
-#include "csv_reader.hpp"
+#include "sensors_data_reader.hpp"
 
 int main() {
     std::string sensors_file = "/home/maciek/Desktop/sensors.csv";
 
-    CsvReader reader;
+    SensorsDataReader reader;
     reader.Open(sensors_file);
 
-    auto header = reader.GetHeader();
-    auto line = reader.GetNextLine();
+    auto sensors_dara = reader.GetSensorsData();
 
     reader.Close();
 

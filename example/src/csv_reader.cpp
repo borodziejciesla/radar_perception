@@ -23,13 +23,17 @@ const std::vector<std::string> & CsvReader::GetHeader(void) const {
 }
 
 const std::vector<float> & CsvReader::GetNextLine(void) {
+    line_.clear();
+    
     if (IsOpen()) {
-        getline(file_, line_string_);
-        ReadDataLine();
+        if (getline(file_, line_string_)) {
+            ReadDataLine();
 
-        line_.clear();
-        for (const auto & element : line_strings_)
-            line_.push_back(std::atoi(element.c_str()));
+            for (const auto & element : line_strings_)
+                line_.push_back(std::atof(element.c_str()));
+        } else {
+            file_.close();
+        }
     }
 
     return line_;
@@ -42,12 +46,22 @@ void CsvReader::ReadDataLine(void) {
     auto element_end = line_string_.begin();
     size_t pos = 0u;
 
-    while(element_end != line_string_.end()) {
-        element_end = element_start + line_string_.find_first_of(",", pos);
-        auto len = element_end - element_start;
-        auto element = line_string_.substr(pos, len);
-        line_strings_.push_back(element);
-        pos += len + 1u;
-        element_start = element_end + 1;
+    while (element_end != line_string_.end()) {
+        if (auto index = line_string_.find(",", pos); index != std::string::npos) {
+            element_end = element_start + (index - pos);
+            auto len = element_end - element_start;
+            auto element = line_string_.substr(pos, len);
+            line_strings_.push_back(element);
+            pos += len + 1u;
+            element_start = element_end + 1;
+        } else if (auto index = line_string_.find("\r", pos); index != std::string::npos) {
+            element_end = element_start + (index - pos);
+            auto len = element_end - element_start;
+            auto element = line_string_.substr(pos, len);
+            line_strings_.push_back(element);
+            break;
+        } else {
+            break;
+        }
     }
 }
