@@ -1,3 +1,6 @@
+#ifndef EXAMPLE_INCLUDE_CSV_READER_HPP_
+#define EXAMPLE_INCLUDE_CSV_READER_HPP_
+
 #include <fstream>
 #include <string>
 #include <vector>
@@ -26,3 +29,5 @@ class CsvReader
         std::vector<std::string> line_strings_;
         std::vector<float> line_;
 };
+
+#endif  //  EXAMPLE_INCLUDE_CSV_READER_HPP_
