@@ -43,3 +43,4 @@ log/
 
 # Other files
 cppcheck_output*
+*.jpg

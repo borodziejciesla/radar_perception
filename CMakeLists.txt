@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 
 set(PROJECT_NAME radar_perception)
-set(TEST_PROJECT_NAME radar_perception_tests)
+set(TEST_PROJECT_NAME ${PROJECT_NAME}_tests)
+set(EXAMPLE_PROJECT_NAME ${PROJECT_NAME}_example)
 
 project(${PROJECT_NAME})
 
@@ -22,10 +23,13 @@ endif()
 set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE ON)
 
 option(BUILD_TESTS "Build tests" ON)
+option(BUILD_EXAMPLE "Build example" OFF)
 option(MAKE_CPPCHECK "Make static code analysis" OFF)
 option(MAKE_CPPLINT "Make code style analysis" OFF)
 
-########### Add sources and includes ###########
+###############################################
+########### Add sources and includes ##########
+###############################################
 include(GNUInstallDirs)
 
 add_library(${PROJECT_NAME}
@@ -59,11 +63,15 @@ target_include_directories(${PROJECT_NAME}
 
 add_subdirectory(components)
 
+###############################################
 ############### Static Analysis ###############
+###############################################
 include(cppcheck)
 include(cpplint)
 
-########### CodeCoverage ##############
+###############################################
+############### CodeCoverage ##################
+###############################################
 if(UNIX)
     if (CMAKE_BUILD_TYPE STREQUAL "Coverage")
         include(CodeCoverage)
@@ -78,7 +86,18 @@ if(UNIX)
     endif() #CMAKE_BUILD_TYPE STREQUAL "Coverage"
 endif() # UNIX
 
+###############################################
+################# Examples ####################
+###############################################
+if(BUILD_EXAMPLE)
+    project(${EXAMPLE_PROJECT_NAME})
+    
+    add_subdirectory(example)
+endif() # BUILD_EXAMPLE
+
+###############################################
 ################ Unit Tests ###################
+###############################################
 if(BUILD_TESTS)    
     project(${TEST_PROJECT_NAME})
 

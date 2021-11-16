@@ -1,3 +1,6 @@
 [submodule "components/eigen"]
 	path = components/eigen
 	url = https://gitlab.com/libeigen/eigen.git
+[submodule "example/matplot_lib"]
+	path = example/matplot_lib
+	url = https://github.com/borodziejciesla/matplotlib-cpp.git
