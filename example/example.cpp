@@ -13,12 +13,20 @@ namespace plt = matplotlibcpp;
 
 /* Helper functions Declaration */
 static void PlotScan(const size_t idx, const measurements::radar::RadarScan & radar_scan, const measurements::radar::RadarProcessor::ProcessingOutput & output);
+static measurements::radar::RadarDetection ConvertDetection(const Detection & detection_raw, const size_t id);
+static measurements::radar::SensorOrigin ConvertSensorOrigin(const SensorData & sensor_data);
 
 /* Main function */
-int main() {
-    std::string sensors_file = "/home/maciek/Desktop/sensors.csv";
-    std::string detections_file = "/home/maciek/Desktop/detections.csv";
+int main(int argc, char *argv[]) {
+    if (argc != 3) {
+        std::cout << "Invalid Number of arguments!";
+        return EXIT_FAILURE;
+    }
 
+    const std::string sensors_file(argv[1]);
+    const std::string detections_file(argv[2]);
+
+    /* Open logs */
     SensorsDataReader reader;
     reader.Open(sensors_file);
     auto sensors_data = reader.GetSensorsData();
@@ -27,7 +35,7 @@ int main() {
     DetectionsReader detection_reader;
     detection_reader.Open(detections_file);
     
-
+    /* Prepare processor */
     measurements::radar::ProcessorCalibration calibration;
 
     calibration.dealiaser_calibration.dealiaser_threshold = 1.0f;
@@ -40,7 +48,7 @@ int main() {
 
     measurements::radar::RadarProcessor radar_processor(calibration);
 
-
+    /* Run Processing */
     for (auto index = 1u; index <= detection_reader.GetNumberOfIndex(); index++) {
         auto detections_data = detection_reader.GetDetectionsByIndex(index);
 
@@ -50,39 +58,11 @@ int main() {
             if (scan.first != 1u)
                 continue;
 
-            radar_scan.sensor_origin.x = sensors_data.at(0u).sensor_location_x;
-            radar_scan.sensor_origin.y = sensors_data.at(0u).sensor_location_y;
-            radar_scan.sensor_origin.z = 0.0f;
-            radar_scan.sensor_origin.roll = sensors_data.at(0u).roll;
-            radar_scan.sensor_origin.pitch = sensors_data.at(0u).pitch;
-            radar_scan.sensor_origin.yaw = sensors_data.at(0u).yaw;
+            radar_scan.sensor_origin = ConvertSensorOrigin(sensors_data.at(0u));
 
             auto idx = 1u;
-            for (const auto & detection : scan.second.detections) {
-                measurements::radar::RadarDetection radar_detection;
-
-                radar_detection.id = idx++;
-
-                radar_detection.range = detection.range;
-                radar_detection.range_std = 0.1f;
-                radar_detection.range_rate = detection.range_rate;
-                radar_detection.range_rate_std = 0.01f;
-                radar_detection.azimuth = detection.azimuth;
-                radar_detection.azimuth_std = 0.05f;
-
-                radar_detection.x = detection.range * std::cos(detection.azimuth);
-                radar_detection.x_std = std::pow(std::cos(detection.azimuth) * radar_detection.range_std, 2.0f)
-                    + std::pow(std::sin(detection.azimuth) * radar_detection.range_std * radar_detection.range, 2.0f);
-                radar_detection.y = detection.range * std::sin(detection.azimuth);
-                radar_detection.y_std = std::pow(std::sin(detection.azimuth) * radar_detection.range_std, 2.0f)
-                    + std::pow(std::cos(detection.azimuth) * radar_detection.range_std * radar_detection.range, 2.0f);
-                radar_detection.y = detection.range * std::sin(detection.azimuth);
-                radar_detection.z = 0.0f;
-
-                radar_detection.dealiasing_status = measurements::radar::DealiasingStatus::MovingObjectDealiased;
-
-                radar_scan.detections.push_back(radar_detection);
-            }
+            for (const auto & detection : scan.second.detections)
+                radar_scan.detections.push_back(ConvertDetection(detection, idx++));
 
             auto output = radar_processor.ProcessScan(radar_scan);
 
@@ -172,4 +152,43 @@ static void PlotScan(const size_t idx, const measurements::radar::RadarScan & ra
     plt::axis("equal");
     plt::savefig(std::to_string(idx) + ".jpg");
     //plt::show();
+}
+
+static measurements::radar::RadarDetection ConvertDetection(const Detection & detection_raw, const size_t id) {
+    measurements::radar::RadarDetection radar_detection;
+
+    radar_detection.id = id;
+
+    radar_detection.range = detection_raw.range;
+    radar_detection.range_std = 0.1f;
+    radar_detection.range_rate = detection_raw.range_rate;
+    radar_detection.range_rate_std = 0.01f;
+    radar_detection.azimuth = detection_raw.azimuth;
+    radar_detection.azimuth_std = 0.05f;
+
+    radar_detection.x = detection_raw.range * std::cos(detection_raw.azimuth);
+    radar_detection.x_std = std::pow(std::cos(detection_raw.azimuth) * radar_detection.range_std, 2.0f)
+        + std::pow(std::sin(detection_raw.azimuth) * radar_detection.range_std * radar_detection.range, 2.0f);
+    radar_detection.y = detection_raw.range * std::sin(detection_raw.azimuth);
+    radar_detection.y_std = std::pow(std::sin(detection_raw.azimuth) * radar_detection.range_std, 2.0f)
+        + std::pow(std::cos(detection_raw.azimuth) * radar_detection.range_std * radar_detection.range, 2.0f);
+    radar_detection.y = detection_raw.range * std::sin(detection_raw.azimuth);
+    radar_detection.z = 0.0f;
+
+    radar_detection.dealiasing_status = measurements::radar::DealiasingStatus::MovingObjectDealiased;
+
+    return radar_detection;
+}
+
+static measurements::radar::SensorOrigin ConvertSensorOrigin(const SensorData & sensor_data) {
+    measurements::radar::SensorOrigin sensor_origin;
+
+    sensor_origin.x = sensor_data.sensor_location_x;
+    sensor_origin.y = sensor_data.sensor_location_y;
+    sensor_origin.z = 0.0f;
+    sensor_origin.roll = sensor_data.roll;
+    sensor_origin.pitch = sensor_data.pitch;
+    sensor_origin.yaw = sensor_data.yaw;
+
+    return sensor_origin;
 }
