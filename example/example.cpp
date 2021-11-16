@@ -12,7 +12,7 @@
 namespace plt = matplotlibcpp;
 
 /* Helper functions Declaration */
-static void PlotScan(const size_t idx, const measurements::radar::RadarScan & radar_scan, const measurements::radar::RadarProcessor::ProcessingOutput & output);
+static void PlotScan(const size_t idx, const size_t radar_index, const measurements::radar::RadarScan & radar_scan, const measurements::radar::RadarProcessor::ProcessingOutput & output);
 static measurements::radar::RadarDetection ConvertDetection(const Detection & detection_raw, const size_t id);
 static measurements::radar::SensorOrigin ConvertSensorOrigin(const SensorData & sensor_data);
 
@@ -55,10 +55,7 @@ int main(int argc, char *argv[]) {
         for (const auto & scan : detections_data) {
             measurements::radar::RadarScan radar_scan;
 
-            if (scan.first != 1u)
-                continue;
-
-            radar_scan.sensor_origin = ConvertSensorOrigin(sensors_data.at(0u));
+            radar_scan.sensor_origin = ConvertSensorOrigin(sensors_data.at(scan.first - 1u));
 
             auto idx = 1u;
             for (const auto & detection : scan.second.detections)
@@ -66,7 +63,7 @@ int main(int argc, char *argv[]) {
 
             auto output = radar_processor.ProcessScan(radar_scan);
 
-            PlotScan(index, radar_scan, output);
+            PlotScan(index, scan.first, radar_scan, output);
         }
     }
 
@@ -76,7 +73,7 @@ int main(int argc, char *argv[]) {
 }
 
 /* Helper functions definitions */
-static void PlotScan(const size_t idx, const measurements::radar::RadarScan & radar_scan, const measurements::radar::RadarProcessor::ProcessingOutput & output) {
+static void PlotScan(const size_t idx, const size_t radar_index, const measurements::radar::RadarScan & radar_scan, const measurements::radar::RadarProcessor::ProcessingOutput & output) {
     plt::figure();
     
     /* Detections */
@@ -150,7 +147,7 @@ static void PlotScan(const size_t idx, const measurements::radar::RadarScan & ra
     plt::xlabel("x [m]");
     plt::ylabel("y [m]");
     plt::axis("equal");
-    plt::savefig(std::to_string(idx) + ".jpg");
+    plt::savefig(std::to_string(radar_index) + "_" + std::to_string(idx) + ".jpg");
     //plt::show();
 }
 
