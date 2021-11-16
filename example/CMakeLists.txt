@@ -1,10 +1,12 @@
-#add_subdirectory(matplotlib_cpp)
+add_subdirectory(matplot_lib)
 
 add_executable(${EXAMPLE_PROJECT_NAME}
   example.cpp
   src/csv_reader.cpp
   src/sensors_data_reader.cpp
   src/detections_reader.cpp
+
+  matplot_lib/matplotlibcpp.h
 
   $<TARGET_OBJECTS:radar_perception>
   $<TARGET_OBJECTS:dealiaser>
@@ -25,7 +27,7 @@ include_directories(${EXAMPLE_PROJECT_NAME}
   PUBLIC
     include
     radar_perception
-    #matplotlib_cpp
+    matplot_lib
     ${Python3_INCLUDE_DIRS}
 )
 

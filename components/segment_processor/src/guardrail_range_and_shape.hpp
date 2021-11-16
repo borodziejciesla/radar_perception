@@ -30,16 +30,13 @@ namespace measurements::radar
             float min_range_ = std::numeric_limits<float>::max();
             float max_range_ = std::numeric_limits<float>::lowest();
 
-            float a11_ = 0.0f;
-            float a21_ = 0.0f;
-            float a22_ = 0.0f;
-            float a31_ = 0.0f;
-            float a32_ = 0.0f;
-            float a33_ = 0.0f;
-            float a41_ = 0.0f;
-            float a42_ = 0.0f;
-            float a43_ = 0.0f;
-            float a44_ = 0.0f;
+            float a0_ = 0.0f;
+            float a1_ = 0.0f;
+            float a2_ = 0.0f;
+            float a3_ = 0.0f;
+            float a4_ = 0.0f;
+            float a5_ = 0.0f;
+            float a6_ = 0.0f;
 
             float b1_ = 0.0f;
             float b2_ = 0.0f;
