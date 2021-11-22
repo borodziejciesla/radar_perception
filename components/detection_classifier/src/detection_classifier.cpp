@@ -41,7 +41,7 @@ namespace measurements::radar
                 auto range_rate_diff_cov = std::pow(detection.range_rate_std, 2.0f) + range_rate_model.covariance.covariance_diagonal.at(0u);
 
                 auto mahalanobis_distance = std::pow(range_rate_abs_diff, 2.0f) / range_rate_diff_cov;
-                auto threshold = InverseChiSquareDistribution(0.9f, 1.0f);
+                auto threshold = InverseChiSquareDistribution(0.95f, 1.0f);
 
                 if (mahalanobis_distance <= threshold)
                     detection.moving_status = MovingStatus::Static;

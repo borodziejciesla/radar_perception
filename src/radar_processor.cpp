@@ -33,9 +33,16 @@ namespace measurements::radar {
         if (!velocity_profile.has_value())
             return std::nullopt;
 
+        velocity_.velocity = velocity_profile.value().value;
+        velocity_.covariance = velocity_profile.value().covariance;
+
         dealiaser_->Run(radar_scan, velocity_profile.value());
         detection_classifier_->Run(radar_scan, velocity_profile.value());
         segmentator_->Run(radar_scan);
         return segments_processor_->ProcessSegments(radar_scan, velocity_profile.value());
+    }
+
+    const RadarVelocity & RadarProcessor::GetRadarVelocity(void) const {
+        return velocity_;
     }
 }   // namespace measurements::radar

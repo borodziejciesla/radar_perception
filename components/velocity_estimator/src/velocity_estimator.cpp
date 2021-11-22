@@ -113,14 +113,14 @@ namespace measurements::radar
 
     std::tuple<uint, float> VelocityEstimator::CalculateIniliersAndFitQuality(const RadarScan & radar_scan, const VelocityProfile & velocity_profile) {
         auto iniliers_number = 0u;
-        auto is_inlier = std::ranges::views::filter([=, &iniliers_number](const RadarDetection & detection) {
+        auto is_inlier = std::ranges::views::filter([this, velocity_profile, &iniliers_number](const RadarDetection & detection) {
             Azimuth azimuth_with_covariance;
             azimuth_with_covariance.value.at(0u) = detection.azimuth;
             azimuth_with_covariance.covariance.covariance_diagonal.at(0u) = detection.azimuth;
 
             auto model_range_rate = RangeRate2D(azimuth_with_covariance, velocity_profile);
             auto distance_from_model = std::abs(detection.range_rate - model_range_rate.value.at(0u));
-            if (distance_from_model < 0.5f) {
+            if (distance_from_model < calibration_.inlier_threshold) {
                 iniliers_number++;
                 return true;
             } else {

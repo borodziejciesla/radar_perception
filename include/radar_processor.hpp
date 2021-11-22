@@ -13,10 +13,11 @@
 #include <memory>
 #include <optional>
 
+#include "guardrail.hpp"
+#include "moving_object.hpp"
 #include "processor_calibration.hpp"
 #include "radar_scan.hpp"
-#include "moving_object.hpp"
-#include "guardrail.hpp"
+#include "radar_velocity.hpp"
 
 namespace measurements::radar
 {
@@ -34,6 +35,7 @@ namespace measurements::radar
 
             using ProcessingOutput = std::optional<std::tuple<MovingObjects, Guardrails>>;
             ProcessingOutput ProcessScan(RadarScan & radar_scan);
+            const RadarVelocity & GetRadarVelocity(void) const;
 
         private:
             ProcessorCalibration calibration_;
@@ -42,6 +44,7 @@ namespace measurements::radar
             std::unique_ptr<Segmentator> segmentator_;
             std::unique_ptr<SegmentsProcessor> segments_processor_;
             std::unique_ptr<VelocityEstimator> velocity_estimator_;
+            RadarVelocity velocity_;
     };
 }   // namespace measurements::radar
 

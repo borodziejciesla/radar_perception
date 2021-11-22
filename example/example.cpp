@@ -1,5 +1,5 @@
-#include <cstdlib>
 #include <cmath>
+#include <cstdlib>
 #include <string>
 
 #include "matplotlibcpp.h"
@@ -12,7 +12,7 @@
 namespace plt = matplotlibcpp;
 
 /* Helper functions Declaration */
-static void PlotScan(const size_t idx, const size_t radar_index, const measurements::radar::RadarScan & radar_scan, const measurements::radar::RadarProcessor::ProcessingOutput & output);
+static void PlotScan(const size_t idx, const size_t radar_index, const measurements::radar::RadarScan & radar_scan, const measurements::radar::RadarProcessor::ProcessingOutput & output, const measurements::radar::RadarVelocity & velocity);
 static measurements::radar::RadarDetection ConvertDetection(const Detection & detection_raw, const size_t id);
 static measurements::radar::SensorOrigin ConvertSensorOrigin(const SensorData & sensor_data);
 
@@ -40,11 +40,11 @@ int main(int argc, char *argv[]) {
 
     calibration.dealiaser_calibration.dealiaser_threshold = 1.0f;
 
-    calibration.segmentator_calibration.neighbourhood_threshold = 3.0f;
+    calibration.segmentator_calibration.neighbourhood_threshold = 2.0f;
     calibration.segmentator_calibration.minimum_detection_in_segment = 2u;
 
-    calibration.velocity_estimator_calibration.maximum_iterations_number = 10u;
-    calibration.velocity_estimator_calibration.inlier_threshold = 0.75f;
+    calibration.velocity_estimator_calibration.maximum_iterations_number = 20u;
+    calibration.velocity_estimator_calibration.inlier_threshold = 0.25f;
 
     measurements::radar::RadarProcessor radar_processor(calibration);
 
@@ -62,8 +62,9 @@ int main(int argc, char *argv[]) {
                 radar_scan.detections.push_back(ConvertDetection(detection, idx++));
 
             auto output = radar_processor.ProcessScan(radar_scan);
+            auto velocity = radar_processor.GetRadarVelocity();
 
-            PlotScan(index, scan.first, radar_scan, output);
+            PlotScan(index, scan.first, radar_scan, output, velocity);
         }
     }
 
@@ -73,7 +74,7 @@ int main(int argc, char *argv[]) {
 }
 
 /* Helper functions definitions */
-static void PlotScan(const size_t idx, const size_t radar_index, const measurements::radar::RadarScan & radar_scan, const measurements::radar::RadarProcessor::ProcessingOutput & output) {
+static void PlotScan(const size_t idx, const size_t radar_index, const measurements::radar::RadarScan & radar_scan, const measurements::radar::RadarProcessor::ProcessingOutput & output, const measurements::radar::RadarVelocity & velocity) {
     plt::figure();
     
     /* Detections */
@@ -116,6 +117,11 @@ static void PlotScan(const size_t idx, const size_t radar_index, const measureme
             y_obj.push_back(static_cast<double>(0.5 * object.object_size.length * s + 0.5 * object.object_size.width * c) + object.object_center.y);
 
             plt::plot(x_obj, y_obj, {{"label", "Object"}});
+
+            std::vector<double> vx = {object.object_center.x, object.object_center.x + object.object_velocity.vx};
+            std::vector<double> vy = {object.object_center.y, object.object_center.y + object.object_velocity.vy};
+
+            plt::plot(vx, vy);
         }
 
         /* Static */
@@ -127,7 +133,7 @@ static void PlotScan(const size_t idx, const size_t radar_index, const measureme
 
             const auto range_delta = object.range.end - object.range.start;
             for (auto index = 0u; index < 100u; index++) {
-                const auto r = object.range.start + static_cast<float>(index) * range_delta;
+                const auto r = object.range.start + static_cast<float>(index) * range_delta / 100.0f;
                 const auto y = std::pow(r, 3.0f) * object.polynomial.a3
                     + std::pow(r, 2.0f) * object.polynomial.a2
                     + r * object.polynomial.a1
@@ -137,7 +143,7 @@ static void PlotScan(const size_t idx, const size_t radar_index, const measureme
                 y_obj.push_back(static_cast<double>(y));
             }
 
-            //plt::plot(x_obj, y_obj, {{"label", "Guardrail"}});
+            plt::plot(x_obj, y_obj, {{"label", "Guardrail"}});
         }
     }
     
@@ -146,6 +152,7 @@ static void PlotScan(const size_t idx, const size_t radar_index, const measureme
     plt::legend();
     plt::xlabel("x [m]");
     plt::ylabel("y [m]");
+    plt::title("Vx = " + std::to_string(velocity.velocity.at(0)) + " [m/s], Vy = " + std::to_string(velocity.velocity.at(0)) + " [m/s]");
     plt::axis("equal");
     plt::savefig(std::to_string(radar_index) + "_" + std::to_string(idx) + ".jpg");
     //plt::show();
