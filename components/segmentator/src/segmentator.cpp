@@ -13,10 +13,15 @@
 #include <ranges>
 #include <cmath>
 
+#include <Eigen/Dense>
+
+#include "math.hpp"
+
 namespace measurements::radar
 {
     Segmentator::Segmentator(const SegmentatorCalibration & calibration)
-        : calibration_{calibration} {
+        : calibration_{calibration}
+        , threshold_{InverseChiSquareDistribution(calibration_.probability_hreshold, 2.0f)}  {
     }
 
     Segmentator::~Segmentator(void) = default;
@@ -71,7 +76,7 @@ namespace measurements::radar
         auto last_index = initial_point_index;
         std::transform(non_segmented_view.begin(), non_segmented_view.end(), non_segmented_view.begin(),
             [&,this](RadarDetection & detection) {
-                if (distance_matrix_(last_index, detection.id - 1u) < calibration_.neighbourhood_threshold) {
+                if (distance_matrix_(last_index, detection.id - 1u) < threshold_) {
                     detection.segment_id = current_segment_id_;
                     last_index = detection.id - 1u;
                     segmented_detections_number_++;
@@ -82,6 +87,18 @@ namespace measurements::radar
     }
 
     float Segmentator::CalculateDistance(const RadarDetection & d1, const RadarDetection & d2) {
-        return std::hypot(d1.x - d2.x, d1.y - d2.y);
+        static Eigen::Matrix2f covariance_d1, covariance_d2, covariance_diff;
+        static Eigen::Vector2f diff;
+
+        covariance_d1 << std::pow(d1.x_std, 2.0f) + 2.0f, 0.0f, 0.0f, std::pow(d1.y_std, 2.0f) + 2.0f;
+        covariance_d2 << std::pow(d2.x_std, 2.0f) + 2.0f, 0.0f, 0.0f, std::pow(d2.y_std, 2.0f) + 2.0f;
+        covariance_diff = covariance_d1 + covariance_d2;
+
+        diff << d1.x - d2.x, d1.y - d2.y;
+        
+        auto mahalanobis_distance_matrix = diff.transpose() * covariance_diff.inverse() * diff;
+        auto mahalanobis_distance = mahalanobis_distance_matrix(0);
+
+        return mahalanobis_distance;
     }
 }   //  namespace measurements::radar

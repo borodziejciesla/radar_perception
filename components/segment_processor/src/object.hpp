@@ -46,6 +46,7 @@ namespace measurements::radar
                 EstimateVelocity(segment);
                 EstimatePose(segment);
                 EstimateSize(segment);
+                moving_object_.assigned_detdectios_ids = ids_;
 
                 return moving_object_;
             }

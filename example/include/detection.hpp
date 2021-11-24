@@ -7,8 +7,11 @@
 struct Detection
 {
     float range = 0.0f;
+    float range_std = 0.0f;
     float azimuth = 0.0f;
+    float azimuth_std = 0.0f;
     float range_rate = 0.0f;
+    float range_rate_std = 0.0f;
 
     size_t object_id = 0u;
 };

@@ -70,7 +70,7 @@ TEST_F(SegmentatorTests, ConstructorTest) {
 TEST_F(SegmentatorTests, RunEmptyScanTest) {
     measurements::radar::RadarScan scan;
     
-    calibration_.neighbourhood_threshold = 100.0f;
+    calibration_.probability_hreshold = 0.01f;
     calibration_.minimum_detection_in_segment = 2u;
 
     auto segmentator = measurements::radar::Segmentator(calibration_);
@@ -93,17 +93,23 @@ TEST_F(SegmentatorTests, RunAllDetectionInSingleSegmentTest) {
             measurements::radar::RadarDetection detection;
             detection.id = id++;
             detection.range_rate = vx * std::cos(azimuth) + vy * std::sin(azimuth);
-            detection.range_rate_std = 0.1f;
+            detection.range_rate_std = 0.5f;
             detection.azimuth = azimuth;
+            detection.azimuth_std = 1.0f;
             detection.range = 10.0f;
+            detection.range_std = 1.0f;
             detection.x = detection.range * std::cos(detection.azimuth);
+            detection.x_std = std::sqrt( std::pow(std::cos(detection.azimuth) * detection.azimuth_std, 2.0f)
+                + std::pow(detection.range * std::sin(detection.azimuth) * detection.azimuth_std, 2.0f) );
             detection.y = detection.range * std::sin(detection.azimuth);
+            detection.y_std = std::sqrt( std::pow(std::sin(detection.azimuth) * detection.azimuth_std, 2.0f)
+                + std::pow(detection.range * std::cos(detection.azimuth) * detection.azimuth_std, 2.0f) );
             detection.dealiasing_status = measurements::radar::DealiasingStatus::StaticVelocityProfileDealiased;
             return detection;
         }
     );
 
-    calibration_.neighbourhood_threshold = 1000000.0f;
+    calibration_.probability_hreshold = 0.9999f;
     calibration_.minimum_detection_in_segment = 2u;
 
     auto segmentator = measurements::radar::Segmentator(calibration_);
@@ -147,7 +153,7 @@ TEST_F(SegmentatorTests, RunTwoSegmentsTest) {
     range = 100.0f;
     std::transform(azimuths.begin() + first_section_border, azimuths.end(), scan.detections.begin() + first_section_border, set_detection);
 
-    calibration_.neighbourhood_threshold = 10.0f;
+    calibration_.probability_hreshold = 0.9f;
     calibration_.minimum_detection_in_segment = 2u;
 
     auto segmentator = measurements::radar::Segmentator(calibration_);
@@ -189,7 +195,7 @@ TEST_F(SegmentatorTests, RunSegmentedPointsTest) {
         }
     );
 
-    calibration_.neighbourhood_threshold = 1000000.0f;
+    calibration_.probability_hreshold = 0.001f;
     calibration_.minimum_detection_in_segment = 2u;
 
     auto segmentator = measurements::radar::Segmentator(calibration_);

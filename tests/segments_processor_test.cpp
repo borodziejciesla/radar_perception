@@ -104,7 +104,7 @@ TEST_F(SegmentsProcessorTests, RunStaticRadarOneStaticSegmentTest) {
     vp.value.at(1u) = 0.0f;
 
     measurements::radar::SegmentatorCalibration segmentator_calibration;
-    segmentator_calibration.neighbourhood_threshold = 1.0f;
+    segmentator_calibration.probability_hreshold = 0.9f;
     segmentator_calibration.minimum_detection_in_segment = 2u;
 
     auto segmentator = measurements::radar::Segmentator(segmentator_calibration);
@@ -155,7 +155,7 @@ TEST_F(SegmentsProcessorTests, RunStaticRadarTwoStaticSegmentTest) {
     vp.value.at(1u) = 0.0f;
 
     measurements::radar::SegmentatorCalibration segmentator_calibration;
-    segmentator_calibration.neighbourhood_threshold = 1.0f;
+    segmentator_calibration.probability_hreshold = 0.9f;
     segmentator_calibration.minimum_detection_in_segment = 2u;
 
     auto segmentator = measurements::radar::Segmentator(segmentator_calibration);
@@ -231,7 +231,7 @@ TEST_F(SegmentsProcessorTests, RunStaticRadarTwoStaticOneMovingSegmentTest) {
     vp.value.at(1u) = 0.0f;
 
     measurements::radar::SegmentatorCalibration segmentator_calibration;
-    segmentator_calibration.neighbourhood_threshold = 2.0f;
+    segmentator_calibration.probability_hreshold = 0.9f;
     segmentator_calibration.minimum_detection_in_segment = 2u;
 
     auto segmentator = measurements::radar::Segmentator(segmentator_calibration);

@@ -26,7 +26,7 @@ TEST_F(RadarProcessorTests, RunEmptyScanTest)
     measurements::radar::RadarScan scan;
 
     calibrations_.segmentator_calibration.minimum_detection_in_segment = 2u;
-    calibrations_.segmentator_calibration.neighbourhood_threshold = 10.0f;
+    calibrations_.segmentator_calibration.probability_hreshold = 0.9f;
     
     measurements::radar::RadarProcessor rp(calibrations_);
     auto output = rp.ProcessScan(scan);
@@ -54,7 +54,7 @@ TEST_F(RadarProcessorTests, RunTest)
     }
 
     calibrations_.segmentator_calibration.minimum_detection_in_segment = 2u;
-    calibrations_.segmentator_calibration.neighbourhood_threshold = 10.0f;
+    calibrations_.segmentator_calibration.probability_hreshold = 0.9f;
     
     measurements::radar::RadarProcessor rp(calibrations_);
     auto output = rp.ProcessScan(scan);

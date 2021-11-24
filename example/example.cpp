@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 
     calibration.dealiaser_calibration.dealiaser_threshold = 1.0f;
 
-    calibration.segmentator_calibration.neighbourhood_threshold = 2.0f;
+    calibration.segmentator_calibration.probability_hreshold = 0.9f;
     calibration.segmentator_calibration.minimum_detection_in_segment = 2u;
 
     calibration.velocity_estimator_calibration.maximum_iterations_number = 20u;
@@ -117,11 +117,6 @@ static void PlotScan(const size_t idx, const size_t radar_index, const measureme
             y_obj.push_back(static_cast<double>(0.5 * object.object_size.length * s + 0.5 * object.object_size.width * c) + object.object_center.y);
 
             plt::plot(x_obj, y_obj, {{"label", "Object"}});
-
-            std::vector<double> vx = {object.object_center.x, object.object_center.x + object.object_velocity.vx};
-            std::vector<double> vy = {object.object_center.y, object.object_center.y + object.object_velocity.vy};
-
-            plt::plot(vx, vy);
         }
 
         /* Static */
@@ -164,19 +159,19 @@ static measurements::radar::RadarDetection ConvertDetection(const Detection & de
     radar_detection.id = id;
 
     radar_detection.range = detection_raw.range;
-    radar_detection.range_std = 0.1f;
+    radar_detection.range_std = detection_raw.range_std;
     radar_detection.range_rate = detection_raw.range_rate;
-    radar_detection.range_rate_std = 0.01f;
+    radar_detection.range_rate_std = detection_raw.range_rate_std;
     radar_detection.azimuth = detection_raw.azimuth;
-    radar_detection.azimuth_std = 0.05f;
+    radar_detection.azimuth_std = detection_raw.azimuth_std;
 
-    radar_detection.x = detection_raw.range * std::cos(detection_raw.azimuth);
-    radar_detection.x_std = std::pow(std::cos(detection_raw.azimuth) * radar_detection.range_std, 2.0f)
-        + std::pow(std::sin(detection_raw.azimuth) * radar_detection.range_std * radar_detection.range, 2.0f);
-    radar_detection.y = detection_raw.range * std::sin(detection_raw.azimuth);
-    radar_detection.y_std = std::pow(std::sin(detection_raw.azimuth) * radar_detection.range_std, 2.0f)
-        + std::pow(std::cos(detection_raw.azimuth) * radar_detection.range_std * radar_detection.range, 2.0f);
-    radar_detection.y = detection_raw.range * std::sin(detection_raw.azimuth);
+    auto c = std::cos(detection_raw.azimuth);
+    auto s = std::sin(detection_raw.azimuth);
+
+    radar_detection.x = detection_raw.range * c;
+    radar_detection.x_std = std::sqrt(std::pow(c * radar_detection.range_std, 2.0f) + std::pow(s * radar_detection.range_std * radar_detection.range, 2.0f));
+    radar_detection.y = detection_raw.range * s;
+    radar_detection.y_std = std::sqrt(std::pow(s * radar_detection.range_std, 2.0f) + std::pow(c * radar_detection.range_std * radar_detection.range, 2.0f));
     radar_detection.z = 0.0f;
 
     radar_detection.dealiasing_status = measurements::radar::DealiasingStatus::MovingObjectDealiased;

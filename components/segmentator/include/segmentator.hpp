@@ -39,6 +39,7 @@ namespace measurements::radar
             DistanceMatrix distance_matrix_;
             size_t segmented_detections_number_ = 0u;
             size_t current_segment_id_ = 0u;
+            float threshold_ = 0.0f;
     };
 }   // namespace measurements::radar
 

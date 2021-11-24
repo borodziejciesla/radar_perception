@@ -54,9 +54,12 @@ Detection DetectionsReader::ConvertLineToDetection(const std::vector<float> & li
     Detection detection;
 
     detection.range = line_data.at(3u);
-    detection.azimuth = line_data.at(4u);
-    detection.range_rate = line_data.at(5u);
-    detection.object_id = static_cast<size_t>(line_data.at(6u));
+    detection.range_std = line_data.at(4u);
+    detection.azimuth = line_data.at(5u);
+    detection.azimuth_std = line_data.at(6u);
+    detection.range_rate = line_data.at(7u);
+    detection.range_rate_std = line_data.at(8u);
+    detection.object_id = static_cast<size_t>(line_data.at(9u));
 
     return detection;
 }

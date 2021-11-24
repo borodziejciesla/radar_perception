@@ -14,7 +14,7 @@ namespace measurements::radar
 {
     struct SegmentatorCalibration
     {
-        float neighbourhood_threshold = 0.0f;
+        float probability_hreshold = 0.0f;
         unsigned int minimum_detection_in_segment = 0u;
     };
 }   // namespace measurements::radar
