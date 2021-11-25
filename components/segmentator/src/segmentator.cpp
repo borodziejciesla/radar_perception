@@ -69,21 +69,27 @@ namespace measurements::radar
 
     void Segmentator::FindAvailablePoints(size_t initial_point_index, RadarScan & radar_scan) {
         auto is_segmented = std::ranges::views::filter([=](const RadarDetection & detection) {
-            return (detection.segment_id == 0u) && (detection.id >= (initial_point_index + 1u));
+            return (detection.segment_id == 0u) && (detection.id >= (initial_point_index + 1u))
+                && (detection.moving_status == radar_scan.detections.at(initial_point_index).moving_status);
         });
         auto non_segmented_view = radar_scan.detections | is_segmented;
 
-        auto last_index = initial_point_index;
+        last_index_from_segment_ = initial_point_index;
+        current_segment_moving_status_ = radar_scan.detections.at(last_index_from_segment_).moving_status;
         std::transform(non_segmented_view.begin(), non_segmented_view.end(), non_segmented_view.begin(),
             [&,this](RadarDetection & detection) {
-                if (distance_matrix_(last_index, detection.id - 1u) < threshold_) {
+                if (IsDetectionAssociated(detection)) {
                     detection.segment_id = current_segment_id_;
-                    last_index = detection.id - 1u;
+                    last_index_from_segment_ = detection.id - 1u;
                     segmented_detections_number_++;
                 }
                 return detection;
             }
         );
+    }
+
+    bool Segmentator::IsDetectionAssociated(const RadarDetection & detection) {
+        return (distance_matrix_(last_index_from_segment_, detection.id - 1u) < threshold_);
     }
 
     float Segmentator::CalculateDistance(const RadarDetection & d1, const RadarDetection & d2) {

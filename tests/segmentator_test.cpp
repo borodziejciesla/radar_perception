@@ -92,7 +92,7 @@ TEST_F(SegmentatorTests, RunAllDetectionInSingleSegmentTest) {
             static size_t id = 1;
             measurements::radar::RadarDetection detection;
             detection.id = id++;
-            detection.range_rate = vx * std::cos(azimuth) + vy * std::sin(azimuth);
+            detection.range_rate = 0.0f;//vx * std::cos(azimuth) + vy * std::sin(azimuth);
             detection.range_rate_std = 0.5f;
             detection.azimuth = azimuth;
             detection.azimuth_std = 1.0f;

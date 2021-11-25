@@ -39,6 +39,9 @@ namespace measurements::radar
         float y_std = 0.0f;
         float z_std = 0.0f;
 
+        float range_rate_compensated = 0.0f;
+        float range_rate_compensated_std = 0.0f;
+
         DealiasingStatus dealiasing_status = DealiasingStatus::NonDealiased;
         MovingStatus moving_status = MovingStatus::Ambiguous;
 

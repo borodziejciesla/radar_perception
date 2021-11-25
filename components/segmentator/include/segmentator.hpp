@@ -32,6 +32,7 @@ namespace measurements::radar
             void DbScan(RadarScan & radar_scan);
             std::optional<size_t> SelectInitialPointIndex(RadarScan & radar_scan);
             void FindAvailablePoints(size_t initial_point_index, RadarScan & radar_scan);
+            bool IsDetectionAssociated(const RadarDetection & detection);
 
             static float CalculateDistance(const RadarDetection & d1, const RadarDetection & d2);
 
@@ -40,6 +41,8 @@ namespace measurements::radar
             size_t segmented_detections_number_ = 0u;
             size_t current_segment_id_ = 0u;
             float threshold_ = 0.0f;
+            size_t last_index_from_segment_ = 0u;
+            MovingStatus current_segment_moving_status_ = MovingStatus::Ambiguous;
     };
 }   // namespace measurements::radar
 

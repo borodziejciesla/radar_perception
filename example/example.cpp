@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 
     calibration.dealiaser_calibration.dealiaser_threshold = 1.0f;
 
-    calibration.segmentator_calibration.probability_hreshold = 0.9f;
+    calibration.segmentator_calibration.probability_hreshold = 0.85f;
     calibration.segmentator_calibration.minimum_detection_in_segment = 2u;
 
     calibration.velocity_estimator_calibration.maximum_iterations_number = 20u;
@@ -141,6 +141,27 @@ static void PlotScan(const size_t idx, const size_t radar_index, const measureme
             plt::plot(x_obj, y_obj, {{"label", "Guardrail"}});
         }
     }
+
+    // Plot static and moving detections
+    x.clear();
+    y.clear();
+    for (const auto & detection : radar_scan.detections) {
+        if (detection.moving_status == measurements::radar::MovingStatus::Static) {
+            x.push_back(static_cast<double>(detection.x));
+            y.push_back(static_cast<double>(detection.y));
+        }
+    }
+    plt::plot(x, y, "ro", {{"label", "Detections"}});
+
+    x.clear();
+    y.clear();
+    for (const auto & detection : radar_scan.detections) {
+        if (detection.moving_status == measurements::radar::MovingStatus::Moving) {
+            x.push_back(static_cast<double>(detection.x));
+            y.push_back(static_cast<double>(detection.y));
+        }
+    }
+    plt::plot(x, y, "g^", {{"label", "Detections"}});
     
     /* Plot */
     plt::grid();
