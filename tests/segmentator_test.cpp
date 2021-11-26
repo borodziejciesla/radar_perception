@@ -81,8 +81,6 @@ TEST_F(SegmentatorTests, RunEmptyScanTest) {
 TEST_F(SegmentatorTests, RunAllDetectionInSingleSegmentTest) {
     measurements::radar::RadarScan scan;
     scan.detections.resize(10);
-    auto vx = 10.0f;
-    auto vy = 0.5f;
     std::vector<float> azimuths(scan.detections.size());
     std::iota(azimuths.begin(), azimuths.end(), -5);
     
@@ -92,7 +90,7 @@ TEST_F(SegmentatorTests, RunAllDetectionInSingleSegmentTest) {
             static size_t id = 1;
             measurements::radar::RadarDetection detection;
             detection.id = id++;
-            detection.range_rate = 0.0f;//vx * std::cos(azimuth) + vy * std::sin(azimuth);
+            detection.range_rate = 0.0f;
             detection.range_rate_std = 0.5f;
             detection.azimuth = azimuth;
             detection.azimuth_std = 1.0f;

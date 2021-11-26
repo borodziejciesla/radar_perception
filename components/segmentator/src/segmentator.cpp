@@ -75,7 +75,6 @@ namespace measurements::radar
         auto non_segmented_view = radar_scan.detections | is_segmented;
 
         last_index_from_segment_ = initial_point_index;
-        current_segment_moving_status_ = radar_scan.detections.at(last_index_from_segment_).moving_status;
         std::transform(non_segmented_view.begin(), non_segmented_view.end(), non_segmented_view.begin(),
             [&,this](RadarDetection & detection) {
                 if (IsDetectionAssociated(detection)) {

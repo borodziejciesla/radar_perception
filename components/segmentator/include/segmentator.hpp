@@ -42,7 +42,6 @@ namespace measurements::radar
             size_t current_segment_id_ = 0u;
             float threshold_ = 0.0f;
             size_t last_index_from_segment_ = 0u;
-            MovingStatus current_segment_moving_status_ = MovingStatus::Ambiguous;
     };
 }   // namespace measurements::radar
 
