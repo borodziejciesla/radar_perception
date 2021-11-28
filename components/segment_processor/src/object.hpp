@@ -15,14 +15,19 @@
 #include <limits>
 #include <algorithm>
 
-#include "radar_detection.hpp"
 #include "moving_object.hpp"
+#include "msac.hpp"
+#include "radar_detection.hpp"
+#include "radar_scan.hpp"
 
 namespace measurements::radar
 {
     class Object
     {
         public:
+            Object(RadarScan & radar_scan) : radar_scan_{radar_scan} {
+            }
+
             void operator()(const RadarDetection & detection) {
                 // Velocity
                 square_c_ += std::pow(std::cos(detection.azimuth), 2.0f) / std::pow(detection.range_rate_std, 2.0f);
@@ -43,10 +48,23 @@ namespace measurements::radar
             }
 
             MovingObject GetMovingObject(auto & segment) {
-                EstimateVelocity(segment);
                 EstimatePose(segment);
                 EstimateSize(segment);
-                moving_object_.assigned_detdectios_ids = ids_;
+
+                if (ids_.size() > 3u) {
+                    auto [velocity, best_inliers] = msac.Run(radar_scan_, ids_);
+
+                    moving_object_.assigned_detdectios_ids = best_inliers;
+                    std::transform(velocity.velocity.begin(), velocity.velocity.end(),
+                        velocity.velocity.begin(), [](const auto & val) { return val; });
+                    std::transform(velocity.covariance.covariance_diagonal.begin(), velocity.covariance.covariance_diagonal.end(),
+                        velocity.covariance.covariance_diagonal.begin(), [](const auto & val) { return val; });
+                    std::transform(velocity.covariance.covariance_lower_triangle.begin(), velocity.covariance.covariance_lower_triangle.end(),
+                        velocity.covariance.covariance_lower_triangle.begin(), [](const auto & val) { return val; });
+                } else {
+                    EstimateVelocity(segment);
+                    moving_object_.assigned_detdectios_ids = ids_;
+                }
 
                 return moving_object_;
             }
@@ -201,6 +219,10 @@ namespace measurements::radar
             Size size_;
 
             MovingObject moving_object_;
+
+            Msac msac;
+
+            RadarScan & radar_scan_;
     };
 }   //  namespace measurements::radar
 

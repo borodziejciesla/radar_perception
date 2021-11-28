@@ -28,14 +28,14 @@ namespace measurements::radar
             explicit SegmentsProcessor(const SegmentProcessorCalibration & calibration);
             ~SegmentsProcessor(void);
 
-            std::tuple<MovingObjects, Guardrails> ProcessSegments(const RadarScan & radar_scan, const VelocityProfile & velocity_profile);
+            std::tuple<MovingObjects, Guardrails> ProcessSegments(RadarScan & radar_scan, const VelocityProfile & velocity_profile);
 
         private:
             using Segment = std::variant<MovingObject, Guardrail>;
 
-            std::optional<Segment> ProccessSegment(size_t segment_id, const RadarScan & radar_scan, const VelocityProfile & velocity_profile);
+            std::optional<Segment> ProccessSegment(size_t segment_id, RadarScan & radar_scan, const VelocityProfile & velocity_profile);
             bool IsStaticSegment(auto segment, const VelocityProfile & velocity_profile) const;
-            MovingObject ProcessMovingObject(auto segment);
+            MovingObject ProcessMovingObject(auto segment, RadarScan & radar_scan);
             Guardrail ProcessGuardrail(auto segment);
 
             SegmentProcessorCalibration calibration_;

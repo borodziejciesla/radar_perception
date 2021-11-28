@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.16)
 
 add_library(segment_processor
     src/guardrail_range_and_shape.cpp
-    src/segment_processor.cpp  
+    src/msac.cpp
+    src/segment_processor.cpp
 )
 
 target_include_directories(segment_processor
