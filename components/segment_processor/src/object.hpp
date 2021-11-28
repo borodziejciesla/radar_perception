@@ -15,14 +15,19 @@
 #include <limits>
 #include <algorithm>
 
-#include "radar_detection.hpp"
 #include "moving_object.hpp"
+#include "msac.hpp"
+#include "radar_detection.hpp"
+#include "radar_scan.hpp"
 
 namespace measurements::radar
 {
     class Object
     {
         public:
+            Object(RadarScan & radar_scan) : radar_scan_{radar_scan} {
+            }
+
             void operator()(const RadarDetection & detection) {
                 // Velocity
                 square_c_ += std::pow(std::cos(detection.azimuth), 2.0f) / std::pow(detection.range_rate_std, 2.0f);
@@ -32,18 +37,25 @@ namespace measurements::radar
                 b1_ += -std::cos(detection.azimuth) * detection.range_rate / std::pow(detection.range_rate_std, 2.0f);
                 b2_ += -std::sin(detection.azimuth) * detection.range_rate / std::pow(detection.range_rate_std, 2.0f);
 
-                // Position
-                sum_x_ += detection.x;
-                sum_y_ += detection.y;
-                x_pose_cov_ += std::pow(detection.x_std, 2.0f);
-                y_pose_cov_ += std::pow(detection.y_std, 2.0f);
-
                 // Update ids
                 ids_.push_back(detection.id);
             }
 
             MovingObject GetMovingObject(auto & segment) {
-                EstimateVelocity(segment);
+                if (ids_.size() > 3u) {
+                    auto [velocity, best_inliers] = msac.Run(radar_scan_, ids_);
+                    ids_ = best_inliers;
+                    
+                    std::transform(velocity.velocity.begin(), velocity.velocity.end(),
+                        velocity.velocity.begin(), [](const auto & val) { return val; });
+                    std::transform(velocity.covariance.covariance_diagonal.begin(), velocity.covariance.covariance_diagonal.end(),
+                        velocity.covariance.covariance_diagonal.begin(), [](const auto & val) { return val; });
+                    std::transform(velocity.covariance.covariance_lower_triangle.begin(), velocity.covariance.covariance_lower_triangle.end(),
+                        velocity.covariance.covariance_lower_triangle.begin(), [](const auto & val) { return val; });
+                } else {
+                    EstimateVelocity(segment);
+                }
+
                 EstimatePose(segment);
                 EstimateSize(segment);
                 moving_object_.assigned_detdectios_ids = ids_;
@@ -110,6 +122,14 @@ namespace measurements::radar
             }
 
             void EstimatePose(auto & segment) {
+                /* Find center of object */
+                for (const size_t id: ids_) {
+                    sum_x_ += radar_scan_.detections.at(id - 1u).x;
+                    sum_y_ += radar_scan_.detections.at(id - 1u).y;
+                    x_pose_cov_ += std::pow(radar_scan_.detections.at(id - 1u).x_std, 2.0f);
+                    y_pose_cov_ += std::pow(radar_scan_.detections.at(id - 1u).y_std, 2.0f);
+                }
+
                 pose_.x = sum_x_ / static_cast<float>(ids_.size());
                 pose_.y = sum_y_ / static_cast<float>(ids_.size());
                 pose_.covariance.covariance_diagonal.at(0) = x_pose_cov_ / static_cast<float>(ids_.size());
@@ -122,16 +142,16 @@ namespace measurements::radar
                 auto u_20_cov = 0.0f;
                 auto u_02_cov = 0.0f;
                 
-                std::for_each(segment.begin(), segment.end(), [&](const RadarDetection & detection) {
-                    auto delta_x = detection.x - pose_.x;
-                    auto delta_y = detection.y - pose_.y;
+                std::for_each(ids_.begin(), ids_.end(), [&](const size_t id) {
+                    auto delta_x = radar_scan_.detections.at(id - 1u).x - pose_.x;
+                    auto delta_y = radar_scan_.detections.at(id - 1u).y - pose_.y;
 
                     u_11 += delta_x * delta_y;
-                    u_11_cov += std::pow(delta_x * detection.x_std, 2.0f) + std::pow(delta_y * detection.y_std, 2.0f);
+                    u_11_cov += std::pow(delta_x * radar_scan_.detections.at(id - 1u).x_std, 2.0f) + std::pow(delta_y * radar_scan_.detections.at(id - 1u).y_std, 2.0f);
                     u_20 += std::pow(delta_x, 2.0f);
-                    u_20_cov += std::pow(2.0f * detection.x * detection.x_std, 2.0f);
+                    u_20_cov += std::pow(2.0f * radar_scan_.detections.at(id - 1u).x * radar_scan_.detections.at(id - 1u).x_std, 2.0f);
                     u_02 += std::pow(delta_y, 2.0f);
-                    u_02_cov += std::pow(2.0f * detection.y * detection.y_std, 2.0f);
+                    u_02_cov += std::pow(2.0f * radar_scan_.detections.at(id - 1u).y * radar_scan_.detections.at(id - 1u).y_std, 2.0f);
                 });
                 
                 auto tan = 2.0f * u_11 / (u_20 - u_02);
@@ -153,12 +173,12 @@ namespace measurements::radar
             void EstimateSize(auto & segment) {
                 using Point = std::pair<float, float>;
                 std::vector<Point> points_rotated(ids_.size());
-                std::transform(segment.begin(), segment.end(), points_rotated.begin(),
-                    [this](const RadarDetection & detection) {
-                        auto delta_x = detection.x - pose_.x;
-                        auto delta_y = detection.y - pose_.y;
-                        auto c = std::cos(-detection.azimuth);
-                        auto s = std::sin(-detection.azimuth);
+                std::transform(ids_.begin(), ids_.end(), points_rotated.begin(),
+                    [this](const size_t id) {
+                        auto delta_x = radar_scan_.detections.at(id - 1u).x - pose_.x;
+                        auto delta_y = radar_scan_.detections.at(id - 1u).y - pose_.y;
+                        auto c = std::cos(-radar_scan_.detections.at(id - 1u).azimuth);
+                        auto s = std::sin(-radar_scan_.detections.at(id - 1u).azimuth);
 
                         auto x_rotated = delta_x * c - delta_y * s;
                         auto y_rotated = delta_x * s + delta_y * c;
@@ -201,6 +221,10 @@ namespace measurements::radar
             Size size_;
 
             MovingObject moving_object_;
+
+            Msac msac;
+
+            RadarScan & radar_scan_;
     };
 }   //  namespace measurements::radar
 

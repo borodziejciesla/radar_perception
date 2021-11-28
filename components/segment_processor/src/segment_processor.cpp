@@ -27,7 +27,7 @@ namespace measurements::radar
 
     SegmentsProcessor::~SegmentsProcessor(void) = default;
 
-    std::tuple<MovingObjects, Guardrails> SegmentsProcessor::ProcessSegments(const RadarScan & radar_scan, const VelocityProfile & velocity_profile) {
+    std::tuple<MovingObjects, Guardrails> SegmentsProcessor::ProcessSegments(RadarScan & radar_scan, const VelocityProfile & velocity_profile) {
         moving_objects_.clear();
         guardrails_.clear();
         
@@ -54,7 +54,7 @@ namespace measurements::radar
         return std::tuple{moving_objects_, guardrails_};
     }
 
-    std::optional<SegmentsProcessor::Segment> SegmentsProcessor::ProccessSegment(size_t segment_id, const RadarScan & radar_scan, const VelocityProfile & velocity_profile) {
+    std::optional<SegmentsProcessor::Segment> SegmentsProcessor::ProccessSegment(size_t segment_id, RadarScan & radar_scan, const VelocityProfile & velocity_profile) {
         auto selected_segment = std::ranges::views::filter([=](const RadarDetection & detection) {
             return detection.segment_id == segment_id;
         });
@@ -68,7 +68,7 @@ namespace measurements::radar
         if (IsStaticSegment(segment_detections, velocity_profile))
             return ProcessGuardrail(segment_detections);
         else
-            return ProcessMovingObject(segment_detections);
+            return ProcessMovingObject(segment_detections, radar_scan);
     }
 
     bool SegmentsProcessor::IsStaticSegment(auto segment, const VelocityProfile & velocity_profile) const {
@@ -88,8 +88,8 @@ namespace measurements::radar
         return average_error < 1.0f;    // TODO : refactor
     }
 
-    MovingObject SegmentsProcessor::ProcessMovingObject(auto segment) {
-        Object object = std::for_each(segment.begin(), segment.end(), Object());       
+    MovingObject SegmentsProcessor::ProcessMovingObject(auto segment, RadarScan & radar_scan) {
+        Object object = std::for_each(segment.begin(), segment.end(), Object(radar_scan));
         return object.GetMovingObject(segment);
     }
 
