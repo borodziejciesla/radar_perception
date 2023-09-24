@@ -14,7 +14,7 @@
 
 namespace measurements::radar
 {
-    template <size_t size>
+    template <std::size_t size>
     struct Covariance
     {
         std::array<float, size> covariance_diagonal = {};

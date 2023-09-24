@@ -22,7 +22,7 @@ endif()
 
 set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE ON)
 
-option(BUILD_TESTS "Build tests" ON)
+option(BUILD_TESTS "Build tests" OFF)
 option(BUILD_EXAMPLE "Build example" OFF)
 option(MAKE_CPPCHECK "Make static code analysis" OFF)
 option(MAKE_CPPLINT "Make code style analysis" OFF)
@@ -31,6 +31,8 @@ option(MAKE_CPPLINT "Make code style analysis" OFF)
 ########### Add sources and includes ##########
 ###############################################
 include(GNUInstallDirs)
+
+find_package(Eigen3 REQUIRED QUIET)
 
 add_library(${PROJECT_NAME}
     src/radar_processor.cpp
@@ -47,6 +49,8 @@ add_library(radar_io::radar_io ALIAS radar_io)
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
         radar_io
+    PRIVATE
+        Eigen3::Eigen
 )
 
 target_include_directories(${PROJECT_NAME}

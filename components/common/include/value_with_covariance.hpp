@@ -14,7 +14,7 @@
 
 namespace measurements::radar
 {
-    template <size_t size>
+    template <std::size_t size>
     struct ValueWithCovariance
     {
         std::array<float, size> value;
