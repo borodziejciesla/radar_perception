@@ -23,6 +23,7 @@
 
 namespace measurements::radar
 {
+    using uint = unsigned int;
     class VelocityEstimator
     {
         public:
